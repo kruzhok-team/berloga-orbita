@@ -1,0 +1,9 @@
+<devices><device number="1" name="camera" start_state="OFF" />
+    <device number="1" name="generator" start_state="ON" in_safe_mode="ON" />
+    <device number="2" name="generator" start_state="ON" in_safe_mode="ON" />
+    <device number="1" name="moon_damper" start_state="ON" />
+    <device number="1" name="transmitter" start_state="ON" in_safe_mode="ON" />
+    <device number="1" name="diagn" start_state="ON" in_safe_mode="ON" />
+    <device number="1" name="cpu" start_state="ON" in_safe_mode="ON" />
+    <device number="1" name="engine_g" start_state="OFF" in_safe_mode="OFF" />
+    <device number="1" name="fueltank_large" start_state="ON" in_safe_mode="ON" /></devices>
