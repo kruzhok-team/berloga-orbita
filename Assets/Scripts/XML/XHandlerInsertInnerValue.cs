@@ -35,7 +35,7 @@ namespace XML
 
         public void CallBack()
         {
-            Debug.Log("Not implemented yet");
+            throw new System.NotImplementedException();
         }
 
         public string GetXPath()

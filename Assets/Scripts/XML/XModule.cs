@@ -18,15 +18,21 @@ namespace XML
     
         private XmlDocument _document = new XmlDocument();
     
-        private string _filePath;
+        private readonly string _filePath;
+        private readonly string _fileName;
         private string _savePath;
-        private string _fileName;
+        
         public XModule(string filepath, string filename) // change 
         {
             _filePath = filepath;
             _fileName = filename;
         
-            _document.Load(filepath + "/" +  filename);
+            _document.Load(_filePath + "/" +  _fileName);
+        }
+
+        public void Reload()
+        { 
+            _document.Load(_filePath + "/" +  _fileName);
         }
 
         public void InsertElement(string xpath, XmlElement newElement)
@@ -85,6 +91,11 @@ namespace XML
         public void SaveDocument(string name, string path)
         {
             _document.Save(path + "/" + name);
+        }
+
+        public void LogDocument()
+        {
+            Debug.Log(_document.OuterXml);
         }
  
     }

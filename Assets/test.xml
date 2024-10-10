@@ -24,7 +24,7 @@
     <program>
         <stage id="Landing">
             <command time="0" device="D1" action="PERIOD" argument="10"/>
-            <command time="214" device="EG1" action="TURNON"/>
+            <command device="EG1" action="TURNON"/>
         </stage>
         <stage id="Surface activity">
             <command time="0" device="D1" action="PERIOD" argument="10"/>

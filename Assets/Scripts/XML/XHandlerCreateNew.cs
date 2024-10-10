@@ -11,7 +11,6 @@ namespace XML
     /// </summary>
     public class XHandlerCreateNew : MonoBehaviour, IXHandler
     {
-        [SerializeField] private TextMeshProUGUI textObject;
         [SerializeField] private string xpath;
         [SerializeField] private string elementName;
         [SerializeField] public List<Pair> attributes;
@@ -19,16 +18,11 @@ namespace XML
         public XModule module;
         public string GetValue()
         {
-            return textObject.text;
+            return "no value";
         }
         
         void Start()
         {
-            if (textObject == null)
-            {
-                Debug.LogError("XMLHandler: No text object attached");
-            }
-            
             module = GameObject.FindWithTag("GameManager")?.GetComponent<GameManager>()?.GetXModule();
             if (module == null)
             {
