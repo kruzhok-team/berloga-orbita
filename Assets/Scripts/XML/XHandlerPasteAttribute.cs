@@ -14,13 +14,17 @@ namespace XML
     }
     public class XHandlerPasteAttribute : MonoBehaviour, IXHandler
     {
-        private XModule _module;
+        [SerializeField] private bool needCreateNewElement = false; // possibly can mark by server response
         
         [SerializeField] private string xpath;
+        [SerializeField] private string elementName = "null"; // uses only if creating new
+        
+        // inner value if needed
+        
         [SerializeField] public List<Pair> defaultAttributes;
         [SerializeField] public List<ParametrizedPair> attributes;
 
-    
+        private XModule _module;
         void Start()
         {
             _module = GameObject.FindWithTag("GameManager")?.GetComponent<GameManager>()?.GetXModule();
@@ -30,21 +34,35 @@ namespace XML
                 Debug.LogError("XMLHandler: Can't find GameManager");
             }
         }
+
+        private void CreateNewElement(List<Pair> pairs)
+        {
+            var elem = _module.CreateNewXmlElement(elementName, pairs);
+            _module.InsertElement(xpath, elem);
+        }
         
         public void CallBack()
         {
             if (_module == null) return;
             
-            foreach (var attribute in defaultAttributes)
-            {
-                _module.PasteNewAttribute(xpath, attribute.key, attribute.value);
-            }
-
+            List<Pair> allAttributes = new List<Pair>(defaultAttributes);
+            
             foreach (var attribute in attributes)
             {
                 string cleaned = Regex.Replace(attribute.valueRef.text, @"[^a-zA-Zа-яА-Я0-9]", "");
-                _module.PasteNewAttribute(xpath, attribute.key, cleaned);
+                allAttributes.Add(new Pair() { key = attribute.key, value = cleaned});
             }
+
+            if (needCreateNewElement)
+            {
+                CreateNewElement(allAttributes);
+            }
+            else
+            {
+                _module.PasteNewAttributes(xpath, allAttributes);
+            }
+           
+            
            
         }
 

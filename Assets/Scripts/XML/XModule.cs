@@ -14,25 +14,22 @@ namespace XML
     }
     public class XModule
     {
-        public static string DefaultFilePath { get; } = Application.dataPath;
-    
         private XmlDocument _document = new XmlDocument();
-    
-        private readonly string _filePath;
-        private readonly string _fileName;
+
+        public string FilePath = "";
+        public string FileName = "";
         private string _savePath;
-        
-        public XModule(string filepath, string filename) // change 
+
+        public XModule() {}
+        public XModule(string filepath, string filename)
         {
-            _filePath = filepath;
-            _fileName = filename;
-        
-            _document.Load(_filePath + "/" +  _fileName);
+            FilePath = filepath;
+            FileName = filename;
         }
 
         public void Reload()
         { 
-            _document.Load(_filePath + "/" +  _fileName);
+            _document.Load(FilePath + "/" +  FileName);
         }
 
         public void InsertElement(string xpath, XmlElement newElement)
@@ -54,7 +51,14 @@ namespace XML
             }
             node.InnerText = value;
         }
-        
+
+        public void PasteNewAttributes(string xpath, List<Pair> newAttributes)
+        {
+            foreach (var pair in newAttributes)
+            {
+                PasteNewAttribute(xpath, pair.key, pair.value);
+            }
+        }
         public void PasteNewAttribute(string xpath, string name, string value)
         {
             XmlNode node = _document.SelectSingleNode(xpath);
