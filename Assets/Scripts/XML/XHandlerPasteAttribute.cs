@@ -62,8 +62,6 @@ namespace XML
                 _module.PasteNewAttributes(xpath, allAttributes);
             }
            
-            
-           
         }
 
         public string GetXPath()

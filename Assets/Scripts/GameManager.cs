@@ -4,10 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using Connections;
+using TelemetryVisualization;
 using UnityEngine;
 using UnityEngine.Serialization;
 using XML;
-
 
 public sealed class GameManager : MonoBehaviour
 {
@@ -19,8 +19,8 @@ public sealed class GameManager : MonoBehaviour
     [SerializeField] public string inputPath =  Application.dataPath + "/Input";
     
     [SerializeField] public string fileName =  "";
-#if NO_SERVER
-    public bool inputFileAppended=false; // option uses after manually add file in input folder
+#if NO_SERVER  // options used after manually add file in input folder
+    public bool addedTelemetryFile=false;
 #endif
     private void Awake()
     {
@@ -31,19 +31,19 @@ public sealed class GameManager : MonoBehaviour
     {
         GetHandlers();
     }
-    public XModule GetXModule()
-    {
-        return xModule;
-    }
 
-    private void GetHandlers()
+    private void Update()
     {
-        foreach (var handler in FindObjectsByType<XHandlerPasteAttribute>(FindObjectsSortMode.None))
+#if NO_SERVER
+        if (addedTelemetryFile)
         {
-            handlers.Add(handler);
+            addedTelemetryFile = false;
+            VisualizeTelemetry(Application.dataPath + "/Out" + "/log.log");
         }
+#else
+        // TODO: server logic
+#endif
     }
-
     public void Test()
     {
 #if NO_SERVER
@@ -67,4 +67,26 @@ public sealed class GameManager : MonoBehaviour
         Debug.Log(Application.dataPath);
         _connectionsModule.DownloadImage(url, Application.dataPath + "/Out" + "/test.png");
     }
+
+    private void VisualizeTelemetry(string path)
+    {
+        LogParser parser = FindFirstObjectByType<LogParser>();
+        TelemetryVisualizer vs = FindFirstObjectByType<TelemetryVisualizer>();
+        parser.ParseLogFile(path);
+        vs.Visualize(parser.telemetryDataList);
+    }
+    
+    
+    private void GetHandlers()
+    {
+        foreach (var handler in FindObjectsByType<XHandlerPasteAttribute>(FindObjectsSortMode.None))
+        {
+            handlers.Add(handler);
+        }
+    }
+    public XModule GetXModule()
+    {
+        return xModule;
+    }
+
 }
