@@ -2,26 +2,29 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DeviceItem : MonoBehaviour
+namespace UnitCreation
 {
-    public Device device;
-    public TextMeshProUGUI nameText;
-    public Image image;
-
-    public void Setup(Device device)
+    public class DeviceItem : MonoBehaviour
     {
-        this.device = device;
-        nameText.text = device.name;
-        
-        Sprite deviceSprite = Resources.Load<Sprite>(device.imagePath);
+        public Device device;
+        public TextMeshProUGUI nameText;
+        public Image image;
 
-        if (deviceSprite != null)
+        public void Setup(Device currentDevice)
         {
-            image.sprite = deviceSprite;
-        }
-        else
-        {
-            Debug.LogError("Sprite not found at path: " + device.imagePath);
+            device = currentDevice;
+            nameText.text = currentDevice.name;
+        
+            Sprite deviceSprite = Resources.Load<Sprite>(currentDevice.imagePath);
+
+            if (deviceSprite != null)
+            {
+                image.sprite = deviceSprite;
+            }
+            else
+            {
+                Debug.LogError("Sprite not found at path: " + currentDevice.imagePath);
+            }
         }
     }
 }
