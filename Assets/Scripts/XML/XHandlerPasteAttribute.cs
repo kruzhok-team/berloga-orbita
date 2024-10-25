@@ -12,6 +12,9 @@ namespace XML
         public string key;
         public TextMeshProUGUI valueRef;
     }
+    /// <summary>
+    /// TODO: write here smth
+    /// </summary>
     public class XHandlerPasteAttribute : MonoBehaviour, IXHandler
     {
         [SerializeField] private bool needCreateNewElement = false; // possibly can mark by server response
@@ -27,7 +30,8 @@ namespace XML
         private XModule _module;
         void Start()
         {
-            _module = GameObject.FindWithTag("GameManager")?.GetComponent<GameManager>()?.GetXModule();
+            
+            _module = FindFirstObjectByType<GameManager>().GetXModule();
            
             if (_module == null)
             {

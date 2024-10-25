@@ -11,10 +11,15 @@ using XML;
 
 public sealed class GameManager : MonoBehaviour
 {
-    private static XModule xModule;
+    private static XModule xModule = new XModule();
+    private static XModule xModuleBallistic = new XModule();
     private static ConnectionsModule _connectionsModule = new ConnectionsModule();
     private List<IXHandler> handlers = new List<IXHandler>();
+    private IXHandler ballisticHandler  = null;
 
+    private string ballisticsPath = Application.dataPath + "/Resources";
+    private string ballisticsFileName = "ballistics.xml";
+    
     [SerializeField] public string outputPath = Application.dataPath + "/Out";
     [SerializeField] public string inputPath =  Application.dataPath + "/Input";
     
@@ -24,12 +29,14 @@ public sealed class GameManager : MonoBehaviour
 #endif
     private void Awake()
     {
-        xModule = new XModule();
+        //xModule = new XModule();
     }
 
     private void Start()
     {
-        GetHandlers();
+        RegisterHandlers();
+        xModuleBallistic.FileName = ballisticsFileName;
+        xModuleBallistic.FilePath = ballisticsPath;
     }
 
     private void Update()
@@ -77,16 +84,30 @@ public sealed class GameManager : MonoBehaviour
     }
     
     
-    private void GetHandlers()
+    private void RegisterHandlers()
     {
         foreach (var handler in FindObjectsByType<XHandlerPasteAttribute>(FindObjectsSortMode.None))
         {
             handlers.Add(handler);
         }
+        ballisticHandler = FindFirstObjectByType<XHandlerInsertValue>();
+  
     }
     public XModule GetXModule()
     {
         return xModule;
+    }
+
+    public XModule GetXModuleBallistics()
+    {
+        return xModuleBallistic;
+    }
+
+    public void BallisticCalculatorBtnPushDown()
+    {
+        xModuleBallistic.Reload();
+        ballisticHandler.CallBack();
+        xModuleBallistic.LogDocument();
     }
 
 }

@@ -14,11 +14,12 @@ namespace XML
     }
     public class XModule
     {
-        private XmlDocument _document = new XmlDocument();
+        private readonly XmlDocument _document = new XmlDocument();
 
         public string FilePath = "";
         public string FileName = "";
-        private string _savePath;
+        
+        //private string _savePath;
 
         public XModule() {}
         public XModule(string filepath, string filename)
@@ -44,12 +45,26 @@ namespace XML
         public void InsertInnerValue(string xpath, string value)
         {
             XmlNode node = _document.SelectSingleNode(xpath);
+            
             if (node == null)
             {
                 Debug.LogError($"Cannot find element by xpath: {xpath}");
                 return;
             }
             node.InnerText = value;
+        }
+        
+        /// <summary>
+        /// Inserts values into existing attribute by following xpath
+        /// </summary>
+        /// <param name="pairs"> Key of pair is xpath, Value is inserting value</param>
+
+        public void InsertInnerValues(List<Pair> pairs)
+        {
+            foreach (var pair in pairs)
+            {
+                InsertInnerValue(pair.key, pair.value);
+            }
         }
 
         public void PasteNewAttributes(string xpath, List<Pair> newAttributes)
