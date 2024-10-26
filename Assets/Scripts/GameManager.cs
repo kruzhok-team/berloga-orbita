@@ -108,6 +108,8 @@ public sealed class GameManager : MonoBehaviour
         xModuleBallistic.Reload();
         ballisticHandler.CallBack();
         xModuleBallistic.LogDocument();
+        Debug.LogWarning("Correctly generated XML output, but logic not implemented as no server exist");
+        // TODO: work with server and show results
     }
 
 }
