@@ -14,7 +14,8 @@ public sealed class GameManager : MonoBehaviour
     private static XModule xModule = new XModule();
     private static XModule xModuleBallistic = new XModule();
     private static ConnectionsModule _connectionsModule = new ConnectionsModule();
-    private List<IXHandler> handlers = new List<IXHandler>();
+    
+    private XGeneration unitCreationHandler = null;
     private IXHandler ballisticHandler  = null;
 
     private string ballisticsPath = Application.dataPath + "/Resources";
@@ -53,24 +54,6 @@ public sealed class GameManager : MonoBehaviour
         // TODO: server logic
 #endif
     }
-    public void Test()
-    {
-#if NO_SERVER
-        xModule.FileName = fileName;
-        xModule.FilePath = inputPath;
-        
-#else
-        // TODO: server logic
-#endif
-        xModule.Reload();
-        foreach (var handler in handlers)
-        {
-            handler.CallBack();
-        }
-        xModule.LogDocument();
-        xModule.SaveDocument("out_" + xModule.FileName, outputPath);
-    }
-
     public void TestImage(string url = @"https://avatars.mds.yandex.net/i?id=9a7f15bfd1db79112f1fd527886da06e_l-4255244-images-thumbs&n=13")
     {
         Debug.Log(Application.dataPath);
@@ -88,21 +71,18 @@ public sealed class GameManager : MonoBehaviour
     public void GenerateFinalXml()
     {
         xModule.Reload();
-        foreach (var handler in handlers)
+        List<IXHandler> handlers = unitCreationHandler.CollectParts();
+        foreach (IXHandler handler in handlers)
         {
             handler.CallBack();
         }
-#if NO_SERVER
+        
         xModule.LogDocument();
         Debug.LogWarning("No server implemented, but xml generated");
-#endif
     }
     private void RegisterHandlers()
     {
-        foreach (var handler in FindObjectsByType<XHandlerPasteAttribute>(FindObjectsSortMode.None))
-        {
-            handlers.Add(handler);
-        }
+        unitCreationHandler = FindFirstObjectByType<XGeneration>();
         ballisticHandler = FindFirstObjectByType<XHandlerInsertValue>();
   
     }

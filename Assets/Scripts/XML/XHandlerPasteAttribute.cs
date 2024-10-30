@@ -17,18 +17,18 @@ namespace XML
     /// </summary>
     public class XHandlerPasteAttribute : MonoBehaviour, IXHandler
     {
-        [SerializeField] private bool needCreateNewElement = false; // possibly can mark by server response
+        public bool needCreateNewElement = false;
         
         [SerializeField] public string xpath;
-        [SerializeField] private string elementName = "null"; // uses only if creating new
+        public string elementName = "null"; // uses only if creating new
         
         // inner value if needed
         
         [SerializeField] public List<Pair> defaultAttributes;
         [SerializeField] public List<ParametrizedPair> attributes;
 
-        private XModule _module;
-        void Start()
+        public XModule _module;
+        private void Start()
         {
             
             _module = FindFirstObjectByType<GameManager>().GetXModule();
@@ -38,7 +38,7 @@ namespace XML
                 Debug.LogError("XMLHandler: Can't find GameManager");
             }
         }
-
+        
         private void CreateNewElement(List<Pair> pairs)
         {
             var elem = _module.CreateNewXmlElement(elementName, pairs);
@@ -47,7 +47,10 @@ namespace XML
         
         public void CallBack()
         {
-            if (_module == null) return;
+            if (_module == null)
+            {
+                return;
+            }
             
             List<Pair> allAttributes = new List<Pair>(defaultAttributes);
             

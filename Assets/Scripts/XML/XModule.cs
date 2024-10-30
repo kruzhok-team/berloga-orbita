@@ -36,10 +36,12 @@ namespace XML
         public void InsertElement(string xpath, XmlElement newElement)
         {
             XmlNode node = _document.SelectSingleNode(xpath);
-            if (node != null)
+            if (node == null)
             {
-                node.AppendChild(newElement);
+                Debug.LogError($"Cannot find element by xpath: {xpath}");
+                return;
             }
+            node.AppendChild(newElement);
         }
 
         public void InsertInnerValue(string xpath, string value)

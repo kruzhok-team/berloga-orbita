@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using XML;
 
 namespace UnitCreation
 {
@@ -17,15 +18,31 @@ namespace UnitCreation
         
         private void Start()
         {
-            deleteBtn.onClick.AddListener(() => Destroy(gameObject));
+            deleteBtn.onClick.AddListener(() =>
+            {
+                FindFirstObjectByType<XGeneration>().RemoveItem(this);
+                Destroy(gameObject);
+            });
         }
         
-
         public void Setup(Device currentDevice)
         {
             device = currentDevice;
             image.sprite = Resources.Load<Sprite>(device.imagePath);
             nameText.text = device.name;
+            FindFirstObjectByType<XGeneration>().AddItem(this);
+        }
+
+        public string GetMode()
+        {
+            if (dropdown.value == 0)
+            {
+                return "OFF";
+            }
+            else
+            {
+                return "ON";
+            }
         }
     }
 }
