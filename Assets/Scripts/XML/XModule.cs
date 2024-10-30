@@ -14,33 +14,40 @@ namespace XML
     }
     public class XModule
     {
-        public static string DefaultFilePath { get; } = Application.dataPath;
-    
-        private XmlDocument _document = new XmlDocument();
-    
-        private string _filePath;
-        private string _savePath;
-        private string _fileName;
-        public XModule(string filepath, string filename) // change 
-        {
-            _filePath = filepath;
-            _fileName = filename;
+        private readonly XmlDocument _document = new XmlDocument();
+
+        public string FilePath = "";
+        public string FileName = "";
         
-            _document.Load(filepath + "/" +  filename);
+        //private string _savePath;
+
+        public XModule() {}
+        public XModule(string filepath, string filename)
+        {
+            FilePath = filepath;
+            FileName = filename;
+        }
+
+        public void Reload()
+        { 
+            _document.Load(FilePath + "/" +  FileName);
         }
 
         public void InsertElement(string xpath, XmlElement newElement)
         {
             XmlNode node = _document.SelectSingleNode(xpath);
-            if (node != null)
+            if (node == null)
             {
-                node.AppendChild(newElement);
+                Debug.LogError($"Cannot find element by xpath: {xpath}");
+                return;
             }
+            node.AppendChild(newElement);
         }
 
         public void InsertInnerValue(string xpath, string value)
         {
             XmlNode node = _document.SelectSingleNode(xpath);
+            
             if (node == null)
             {
                 Debug.LogError($"Cannot find element by xpath: {xpath}");
@@ -49,6 +56,26 @@ namespace XML
             node.InnerText = value;
         }
         
+        /// <summary>
+        /// Inserts values into existing attribute by following xpath
+        /// </summary>
+        /// <param name="pairs"> Key of pair is xpath, Value is inserting value</param>
+
+        public void InsertInnerValues(List<Pair> pairs)
+        {
+            foreach (var pair in pairs)
+            {
+                InsertInnerValue(pair.key, pair.value);
+            }
+        }
+
+        public void PasteNewAttributes(string xpath, List<Pair> newAttributes)
+        {
+            foreach (var pair in newAttributes)
+            {
+                PasteNewAttribute(xpath, pair.key, pair.value);
+            }
+        }
         public void PasteNewAttribute(string xpath, string name, string value)
         {
             XmlNode node = _document.SelectSingleNode(xpath);
@@ -85,6 +112,11 @@ namespace XML
         public void SaveDocument(string name, string path)
         {
             _document.Save(path + "/" + name);
+        }
+
+        public void LogDocument()
+        {
+            Debug.Log(_document.OuterXml);
         }
  
     }

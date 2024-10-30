@@ -1,0 +1,38 @@
+Название;Код;Масса, кг;Объем, м^3;Потр. энергии, * 10 Вт;Крит. темп., К;Путь к изображению
+Аккумулятор;Acm;70;0.02;0.0;360;Sprites/Devices/Accumulator.png
+Анемометр;AN;12;0.003;4.0;390;Sprites/Devices/Anemometer.png
+Аэродинамический тормоз;Hsl;150;0.01;0.0;2000;Sprites/Devices/AerodynamicBrake.png
+Аэродинамический тормоз усиленный;Hs;1000;0.01;0.0;4000;Sprites/Devices/EnhancedAerodynamicBrake.png
+Барометр;Brm;8;0.003;2.0;340;Sprites/Devices/Barometer.png
+Видеокамера;VC;20;0.008;24.0;330;Sprites/Devices/VideoCamera.png
+Газовый хроматограф;GCh;105;0.06;9.0;330;Sprites/Devices/GasChromatograph.png
+Генератор радиоизотопный;G;200;0.04;-1;430;Sprites/Devices/RadioisotopeGenerator.png
+Датчик магнитного поля;Mgm;10;0.003;9.0;380;Sprites/Devices/MagneticFieldSensor.png
+Двигатель маневровый;EM;140;0.025;11.0;1500;Sprites/Devices/ManeuveringEngine.png
+Двигатель посадочный;EG;250;1.0;5.0;450;Sprites/Devices/LandingEngine.png
+Двигатель посадочный легкий;EL;100;0.5;5.0;450;Sprites/Devices/LightLandingEngine.png
+Двигатель тормозной;E;1900;0.7;25.0;1500;Sprites/Devices/BrakingEngine.png
+Демпфер;Dm;400;0.08;0.0;800;Sprites/Devices/Damper.png
+Демпфер с амортизирующими опорами;DAM;1000;0.15;0.0;350;Sprites/Devices/DamperWithShockAbsorbers.png
+Диагностика базовая;D;25;0.01;2.0;425;Sprites/Devices/BasicDiagnostics.png
+Диагностика расширенная;DA;80;0.02;10.0;410;Sprites/Devices/AdvancedDiagnostics.png
+Инфракрасная камера;IRC;10;0.004;20.0;290;Sprites/Devices/InfraredCamera.png
+Камера;C;10;0.005;14.0;345;Sprites/Devices/Camera.png
+Лазерный анализатор свойств атмосферы;LID;15;0.005;6.0;350;Sprites/Devices/LaserAtmosphereAnalyzer.png
+Лазерный испаритель образцов;LEv;20;0.025;80.0;380;Sprites/Devices/LaserSampleEvaporator.png
+Масс-спектрометр;MSS;200;0.08;19.0;310;Sprites/Devices/MassSpectrometer.png
+Парашют;Pa;40;0.02;0.0;1000;Sprites/Devices/Parachute.png
+Парашют для разряженной атмосферы;Pam;10;0.06;0.0;300;Sprites/Devices/ThinAtmosphereParachute.png
+Парашют силовой;Fp;70;0.02;0.0;4000;Sprites/Devices/PowerParachute.png
+Передатчик базовый;T;30;0.01;4.0;428;Sprites/Devices/BasicTransmitter.png
+Передатчик широкополосной;WT;160;0.05;8.0;380;Sprites/Devices/WidebandTransmitter.png
+Радиометр;Rm;14;0.02;8.0;400;Sprites/Devices/Radiometer.png
+Сейсмограф;Smg;55;0.008;2.0;370;Sprites/Devices/Seismometer.png
+Солнечная батарея;Sbt;30;0.06;0.0;380;Sprites/Devices/SolarPanel.png
+Солнечная батарея расширенная;Sbe;80;0.14;0.0;380;Sprites/Devices/ExtendedSolarPanel.png
+Спектрометр;S;180;0.04;28.0;310;Sprites/Devices/Spectrometer.png
+Спектрофотометр;SPh;80;0.025;7.0;330;Sprites/Devices/Spectrophotometer.png
+Термометр;Trm;2;0.003;2.0;450;Sprites/Devices/Thermometer.png
+Топливный бак базовый;FT;50;0.04;0.0;380;Sprites/Devices/BasicFuelTank.png
+Топливный бак большой;FTL;500;0.4;0.0;380;Sprites/Devices/LargeFuelTank.png
+Центральный компьютер;CPU;50;0.04;10.0;410;Sprites/Devices/CentralComputer.png
