@@ -14,6 +14,7 @@ namespace UnitCreation
         
         public TextMeshProUGUI nameText;
         public TMP_Dropdown dropdown;
+        
         private void Start()
         {
             deleteBtn.onClick.AddListener(() => Destroy(gameObject));

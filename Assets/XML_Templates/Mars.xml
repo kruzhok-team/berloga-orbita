@@ -12,6 +12,9 @@
     </parameters>
     <devices>
         <device number="1" name="camera" start_state="OFF"/>
+        <device number="2" name="camera" start_state="OFF"/>
+        <device number="3" name="camera" start_state="OFF"/>
+        <device number="4" name="camera" start_state="OFF"/>
         <device number="1" name="generator" start_state="ON" in_safe_mode="ON"/>
         <device number="1" name="damper" start_state="ON"/>
         <device number="1" name="transmitter" start_state="ON" in_safe_mode="ON"/>

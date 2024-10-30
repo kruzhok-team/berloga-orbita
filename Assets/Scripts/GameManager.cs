@@ -37,6 +37,8 @@ public sealed class GameManager : MonoBehaviour
         RegisterHandlers();
         xModuleBallistic.FileName = ballisticsFileName;
         xModuleBallistic.FilePath = ballisticsPath;
+        xModule.FilePath = inputPath;
+        xModule.FileName = fileName;
     }
 
     private void Update()
@@ -82,8 +84,19 @@ public sealed class GameManager : MonoBehaviour
         parser.ParseLogFile(path);
         vs.Visualize(parser.telemetryDataList);
     }
-    
-    
+
+    public void GenerateFinalXml()
+    {
+        xModule.Reload();
+        foreach (var handler in handlers)
+        {
+            handler.CallBack();
+        }
+#if NO_SERVER
+        xModule.LogDocument();
+        Debug.LogWarning("No server implemented, but xml generated");
+#endif
+    }
     private void RegisterHandlers()
     {
         foreach (var handler in FindObjectsByType<XHandlerPasteAttribute>(FindObjectsSortMode.None))

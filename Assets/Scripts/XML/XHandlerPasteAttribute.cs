@@ -19,7 +19,7 @@ namespace XML
     {
         [SerializeField] private bool needCreateNewElement = false; // possibly can mark by server response
         
-        [SerializeField] private string xpath;
+        [SerializeField] public string xpath;
         [SerializeField] private string elementName = "null"; // uses only if creating new
         
         // inner value if needed
