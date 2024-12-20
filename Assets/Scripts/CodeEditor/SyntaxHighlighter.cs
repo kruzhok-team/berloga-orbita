@@ -93,7 +93,7 @@ public class SyntaxHighlighter : MonoBehaviour
     void AnalyzeCode(string input)
     {
         displayedText.text = "";
-        HighlightSyntax(_codeAnalyzer.AddIndent(input));
+        HighlightSyntax(input); // TODO: also add indient
     }
     
     
