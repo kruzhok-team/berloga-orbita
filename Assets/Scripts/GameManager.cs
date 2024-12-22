@@ -1,5 +1,3 @@
-#define NO_SERVER
-
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -13,7 +11,7 @@ public sealed class GameManager : MonoBehaviour
 {
     private static XModule xModule = new XModule();
     private static XModule xModuleBallistic = new XModule();
-    private static ConnectionsModule _connectionsModule = new ConnectionsModule();
+    private static ConnectionsModule _connectionsModule;
     
     private XGeneration unitCreationHandler = null;
     private IXHandler ballisticHandler  = null;
@@ -33,8 +31,14 @@ public sealed class GameManager : MonoBehaviour
         //xModule = new XModule();
     }
 
+    public void SetUpMission()
+    {
+        
+    }
+
     private void Start()
     {
+        _connectionsModule = gameObject.AddComponent<ConnectionsModule>() as ConnectionsModule;
         RegisterHandlers();
         xModuleBallistic.FileName = ballisticsFileName;
         xModuleBallistic.FilePath = ballisticsPath;

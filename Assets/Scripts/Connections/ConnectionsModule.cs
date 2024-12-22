@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -33,10 +34,17 @@ namespace Connections
     {
         public string data;
     }
-    public class ConnectionsModule
+    
+    public class CalculationResponse
+    {
+        public string id;
+    }
+    
+    
+    public class ConnectionsModule : MonoBehaviour
     {
         private const String HostUrl = "http://orbita.kruzhok.org/";
-        private readonly byte[] jsonData = System.Text.Encoding.UTF8.GetBytes("{\"model\":\"planets\"}");
+        private readonly byte[] jsonData = Encoding.UTF8.GetBytes("{\"model\":\"planets\"}");
 
         public void Respond(XmlDocument doc)
         {
@@ -92,6 +100,7 @@ namespace Connections
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string responseText = request.downloadHandler.text;
+                var devices = XmlProcessor.ParseParametersFromJson(responseText);
                 Debug.Log("Response: " + responseText);
                 
                 var jsonResponse = JsonUtility.FromJson<ParametersResponse>(responseText);
@@ -122,10 +131,13 @@ namespace Connections
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string responseText = request.downloadHandler.text;
-                Debug.Log("Response: " + responseText);
                 
-                var jsonResponse = JsonUtility.FromJson<ParametersResponse>(responseText);
-                Debug.Log("Data length: " + jsonResponse.data.Length);
+                List<Device> devices = XmlProcessor.ParseDevicesFromJson(responseText);
+                foreach (var device in devices)
+                {
+                    Debug.Log($"Device Name: {device.Name}, FullName: {device.FullName}");
+                }
+                // TODO: return this
             }
             else
             {
@@ -134,7 +146,7 @@ namespace Connections
         }
 
         // POST /calculation
-        public IEnumerator PostCalculation(string model, string xmlData)
+        public IEnumerator PostCalculation(string model, string xmlData, Action<string> callback)
         {
             UnityWebRequest request = new UnityWebRequest($"{HostUrl}/calculation", "POST");
             request.SetRequestHeader("Content-Type", "application/json");
@@ -143,7 +155,7 @@ namespace Connections
             var query = new CalculationRequest() { model = model, xml = xmlData };
             string jsonBody = JsonUtility.ToJson(query);
             byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
-
+            
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
 
@@ -151,7 +163,20 @@ namespace Connections
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log("Calculation Started: " + request.downloadHandler.text); // this is id
+                string responseText = request.downloadHandler.text;
+                CalculationResponse response = JsonUtility.FromJson<CalculationResponse>(responseText);
+                
+                if (response != null)
+                {
+                    callback.Invoke(response.id);
+                    Debug.Log("Extracted ID: " + response.id);
+                }
+                else
+                {
+                    Debug.LogError("Failed to parse JSON");
+                }
+                
+                
             }
             else
             {

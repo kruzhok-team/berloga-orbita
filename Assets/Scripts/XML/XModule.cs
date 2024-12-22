@@ -114,6 +114,11 @@ namespace XML
             _document.Save(path + "/" + name);
         }
 
+        public override string ToString()
+        {
+            return _document.OuterXml;
+        }
+
         public void LogDocument()
         {
             Debug.Log(_document.OuterXml);

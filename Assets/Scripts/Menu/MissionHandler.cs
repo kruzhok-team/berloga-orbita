@@ -1,35 +1,28 @@
 using Connections;
 using UnityEngine;
 
-public class MissionHandler : MonoBehaviour
+namespace Menu
 {
-    [SerializeField] public int missionId;
-    private readonly ConnectionsModule _server = new ConnectionsModule();
+    [System.Serializable]
+    public class Mission
+    { 
+        public string missionName;
+        public bool allowedBallisticCalculator;
+    }
     
-    /// <param name="message">Message string to show in the toast.</param>
-    private void _ShowAndroidToastMessage(string message)
+    public class MissionHandler : MonoBehaviour
     {
-        AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-        AndroidJavaObject unityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
-
-        if (unityActivity != null)
+        private ConnectionsModule _server;
+    
+        void Start()
         {
-            AndroidJavaClass toastClass = new AndroidJavaClass("android.widget.Toast");
-            unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() =>
-            {
-                AndroidJavaObject toastObject = toastClass.CallStatic<AndroidJavaObject>("makeText", unityActivity, message, 0);
-                toastObject.Call("show");
-            }));
+            _server = gameObject.AddComponent(typeof(ConnectionsModule)) as ConnectionsModule;
         }
-    }
-    void Start()
-    {
-        _ShowAndroidToastMessage("Mission started.");
-    }
 
   
-    void Update()
-    {
+        void Update()
+        {
         
+        }
     }
 }

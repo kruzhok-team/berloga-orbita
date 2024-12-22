@@ -14,7 +14,7 @@ namespace UnitCreation
         public Image image;
         
         public TextMeshProUGUI nameText;
-        public TMP_Dropdown dropdown;
+        public PartTumblerController tumbler;
         
         private void Start()
         {
@@ -35,14 +35,7 @@ namespace UnitCreation
 
         public string GetMode()
         {
-            if (dropdown.value == 0)
-            {
-                return "OFF";
-            }
-            else
-            {
-                return "ON";
-            }
+            return !tumbler.GetState() ? "OFF" : "ON";
         }
     }
 }
