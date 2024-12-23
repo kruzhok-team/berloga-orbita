@@ -30,7 +30,7 @@ public class TabSystem : MonoBehaviour
             Destroy(this);
             return;
         }
-        gameObject.transform.SetAsLastSibling();
+        //gameObject.transform.SetAsLastSibling();
         
         foreach (var tab in tabs)
         {

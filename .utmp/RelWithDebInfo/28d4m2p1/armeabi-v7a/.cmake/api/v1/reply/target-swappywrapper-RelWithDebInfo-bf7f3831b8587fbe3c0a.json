@@ -88,7 +88,7 @@
 			],
 			"sysroot" : 
 			{
-				"path" : "/home/yashelter/Unity/Hub/Editor/6000.0.24f1/Editor/Data/PlaybackEngines/AndroidPlayer/NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
+				"path" : "/home/yashelter/Unity/Hub/Editor/6000.0.32f1/Editor/Data/PlaybackEngines/AndroidPlayer/NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
 			}
 		}
 	],
@@ -124,7 +124,7 @@
 		"language" : "CXX",
 		"sysroot" : 
 		{
-			"path" : "/home/yashelter/Unity/Hub/Editor/6000.0.24f1/Editor/Data/PlaybackEngines/AndroidPlayer/NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
+			"path" : "/home/yashelter/Unity/Hub/Editor/6000.0.32f1/Editor/Data/PlaybackEngines/AndroidPlayer/NDK/toolchains/llvm/prebuilt/linux-x86_64/sysroot"
 		}
 	},
 	"name" : "swappywrapper",

@@ -9,9 +9,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 08c1a4793ae06e92b8156765018eeb16
   - enabled: 1
-    path: Assets/Scenes/SceneTemplate.unity
-    guid: 78e00eb39545328b5a46a607c741804c
+    path: Assets/Scenes/Mission1.unity
+    guid: 949013fefb0fc7c7c8a872b686109186
   m_configObjects:
+    com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: a77449874aee50cd4b5729ef925cec65, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 3e4fefceeb86c1e449910b250c9d2fe9, type: 2}
+    com.unity.adaptiveperformance.samsung.android.provider_settings: {fileID: 11400000, guid: 1c52202e3180e49a293538f47269ca34, type: 2}
     com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 9865540aa0b11b9d49397e9aae6b16f4, type: 2}
   m_UseUCBPForAssetBundles: 0
