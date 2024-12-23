@@ -43,13 +43,14 @@ namespace Connections
     
     public class ConnectionsModule : MonoBehaviour
     {
-        private const String HostUrl = "http://orbita.kruzhok.org/";
+        public const String HostUrl = "http://orbita.kruzhok.org/";
         private readonly byte[] jsonData = Encoding.UTF8.GetBytes("{\"model\":\"planets\"}");
 
-        public void Respond(XmlDocument doc)
-        {
-
-        }
+        public List<Device> devices = null;
+        public bool devicesGot = false;
+        
+        public string result = null;
+        public bool resultGot = false;
 
         public bool IsConnectionAvailable()
         {
@@ -116,6 +117,8 @@ namespace Connections
         
 
         // GET /devices
+        
+        
         public IEnumerator GetDevices()
         {
             string url = HostUrl + "devices";
@@ -137,12 +140,14 @@ namespace Connections
                 {
                     Debug.Log($"Device Name: {device.Name}, FullName: {device.FullName}");
                 }
-                // TODO: return this
+                this.devices = devices;
             }
             else
             {
                 Debug.LogError("Error: " + request.error);
             }
+
+            devicesGot = true;
         }
 
         // POST /calculation
@@ -168,7 +173,7 @@ namespace Connections
                 
                 if (response != null)
                 {
-                    callback.Invoke(response.id);
+                    callback?.Invoke(response.id);
                     Debug.Log("Extracted ID: " + response.id);
                 }
                 else
@@ -229,12 +234,15 @@ namespace Connections
             if (request.result == UnityWebRequest.Result.Success)
             {
                 Debug.Log("Calculation Result: " + request.downloadHandler.text);
+                this.result = request.downloadHandler.text;
             }
             else
             {
                 Debug.LogError("Failed to get result: " + request.error);
             }
+            this.resultGot = true;
         }
+        
 
     }
 }

@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using System;
+using System.Collections;
 using UnityEngine.UI;
 
 namespace XML
@@ -24,15 +25,25 @@ namespace XML
         
         [SerializeField] public List<PlaceToInsert> attributes;
         
-        private void Start()
+        private IEnumerator Start()
         {
-            var manager = FindFirstObjectByType<GameManager>();
-            _module = manager.GetXModuleBallistics();
-            if (_module == null)
+            GameManager manager = null;
+            while (_module == null)
             {
-                Debug.LogError("XMLHandler: Can't find GameManager");
+                manager = Init();
+                yield return new WaitForSeconds(0.5f);
             }
             calculateBtn.onClick.AddListener(() => manager.BallisticCalculatorBtnPushDown());
+        }
+
+        private GameManager Init()
+        {
+            var manager = FindFirstObjectByType<GameManager>();
+            if (manager != null)
+            {
+                _module = manager.GetXModuleBallistics();
+            }
+            return manager;
         }
         
         public void CallBack()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,17 @@ public class TabController
 {
     public Button trigger;
     public GameObject panel;
+    public TabType type = 0;
+}
+
+[Serializable]
+public enum TabType
+{
+    Nothing = 0, 
+    UnitCreation = 1,
+    CodeEditor = 2,
+    Ballistic = 3,
+    RunAndExecute = 4
 }
 
 /// <summary>
@@ -30,7 +42,7 @@ public class TabSystem : MonoBehaviour
             Destroy(this);
             return;
         }
-        //gameObject.transform.SetAsLastSibling();
+        //gameObject.transform.SetAsLastSibling(); // component should be last on scene
         
         foreach (var tab in tabs)
         {
@@ -53,6 +65,14 @@ public class TabSystem : MonoBehaviour
         
         activeTab = tab;
         activeTab.panel.SetActive(true);
+    }
+
+    public void DeactivateTab(TabType type)
+    {
+        foreach (var tab in tabs.Where(tab => tab.type == type))
+        {
+            tab.panel.SetActive(false);
+        }
     }
 
 }

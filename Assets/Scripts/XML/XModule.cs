@@ -16,21 +16,17 @@ namespace XML
     {
         private readonly XmlDocument _document = new XmlDocument();
 
-        public string FilePath = "";
-        public string FileName = "";
-        
+        private string path;
         //private string _savePath;
-
-        public XModule() {}
-        public XModule(string filepath, string filename)
+        
+        public XModule(string path)
         {
-            FilePath = filepath;
-            FileName = filename;
+            this.path = path;
         }
 
         public void Reload()
         { 
-            _document.Load(FilePath + "/" +  FileName);
+            _document.Load(path);
         }
 
         public void InsertElement(string xpath, XmlElement newElement)
@@ -109,9 +105,9 @@ namespace XML
         }
         
         
-        public void SaveDocument(string name, string path)
+        public void SaveDocument(string targetPath)
         {
-            _document.Save(path + "/" + name);
+            _document.Save(targetPath);
         }
 
         public override string ToString()

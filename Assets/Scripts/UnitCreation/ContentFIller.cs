@@ -1,20 +1,32 @@
+using System.Collections;
 using System.Collections.Generic;
+using Connections;
 using UnityEngine;
 
 namespace UnitCreation
 {
-    public class ContentFIller : MonoBehaviour
+    public class ContentFiller : MonoBehaviour
     {
         public GameObject devicePrefab;
         public Transform contentTransform;
-    
-        private CsvLoader _csvLoader;
+        
         private List<Device> _devices;
+        
+        private GameManager _manager;
     
         private void Start()
         {
-            _csvLoader = GetComponent<CsvLoader>();
-            _devices = _csvLoader.GetDevices();
+            _manager = FindFirstObjectByType<GameManager>();
+            StartCoroutine(FetchContent());
+        }
+
+        private IEnumerator FetchContent()
+        {
+            while (!GameManager.devicesGot)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            _devices = _manager.GetDevices();
             FillContent();
         }
     

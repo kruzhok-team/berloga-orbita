@@ -18,13 +18,9 @@ namespace XML
         public string xpath = "//python_code";
         
         
-        private void Start()
-        {
-            _module = FindFirstObjectByType<GameManager>().GetXModule();
-        }
-        
         public void CallBack()
         {
+            _module = FindFirstObjectByType<GameManager>().GetXModule();
             if (_module == null)
             {
                 Debug.LogError("No module for object found");

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Connections;
 using TMPro;
 using UnitCreation;
 using UnityEngine;
@@ -38,7 +39,7 @@ namespace XML
             int i = 1;
             foreach (var part in _items)
             {
-                var d = part.device;
+                Device d = part.device;
                 var mgr = Instantiate(prefab, _transform).GetComponent<XHandlerPasteAttribute>();
                 mgr._module = m.GetXModule();
                 handlers.Add(mgr);
@@ -46,13 +47,13 @@ namespace XML
                 mgr.needCreateNewElement = true;
                 mgr.elementName = "device";
 
-                counter.TryAdd(d.name, 1);
+                counter.TryAdd(d.Name, 1);
 
-                mgr.defaultAttributes.Add(new Pair() { key = "number", value = counter[d.name].ToString() });
-                mgr.defaultAttributes.Add(new Pair() { key = "name", value = d.name });
+                mgr.defaultAttributes.Add(new Pair() { key = "number", value = counter[d.Name].ToString() });
+                mgr.defaultAttributes.Add(new Pair() { key = "name", value = d.Name });
                 mgr.defaultAttributes.Add(new Pair() { key = "start_state", value = part.GetMode() });
 
-                counter[d.name]++;
+                counter[d.Name]++;
                 ++i;
             }
             return handlers;

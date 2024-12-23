@@ -1,3 +1,4 @@
+using Connections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -28,8 +29,8 @@ namespace UnitCreation
         public void Setup(Device currentDevice)
         {
             device = currentDevice;
-            image.sprite = Resources.Load<Sprite>(device.imagePath);
-            nameText.text = device.name;
+            image.sprite = Resources.Load<Sprite>(GameManager.devicePrefixPath + device.Name);
+            nameText.text = device.FullName;
             FindFirstObjectByType<XGeneration>().AddItem(this);
         }
 

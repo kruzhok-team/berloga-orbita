@@ -1,76 +1,107 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using Connections;
+using System.Threading.Tasks;
 using TelemetryVisualization;
 using UnityEngine;
+using Connections;
+using Menu;
 using UnityEngine.Serialization;
 using XML;
 
+[RequireComponent(typeof(MissionHandler))]
 public sealed class GameManager : MonoBehaviour
 {
-    private static XModule xModule = new XModule();
-    private static XModule xModuleBallistic = new XModule();
-    private static ConnectionsModule _connectionsModule;
+    public static bool devicesGot = false;
+    public static string devicePrefixPath = null;
     
+    private static XModule xModule;
+    private static XModule xModuleBallistic;
+    
+    private MissionHandler missionHandler;
     private XGeneration unitCreationHandler = null;
     private IXHandler ballisticHandler  = null;
+    private TabSystem tabSystem = null;
 
-    private string ballisticsPath = Application.dataPath + "/Resources";
-    private string ballisticsFileName = "ballistics.xml";
-    
-    [SerializeField] public string outputPath = Application.dataPath + "/Out";
-    [SerializeField] public string inputPath =  Application.dataPath + "/Input";
-    
-    [SerializeField] public string fileName =  "";
-#if NO_SERVER  // options used after manually add file in input folder
-    public bool addedTelemetryFile=false;
-#endif
+
     private void Awake()
     {
-        //xModule = new XModule();
+        devicePrefixPath = "Devices/";
     }
-
-    public void SetUpMission()
-    {
-        
-    }
-
     private void Start()
     {
-        _connectionsModule = gameObject.AddComponent<ConnectionsModule>() as ConnectionsModule;
+        missionHandler = GetComponent<MissionHandler>();
+        tabSystem = FindFirstObjectByType<TabSystem>();
         RegisterHandlers();
-        xModuleBallistic.FileName = ballisticsFileName;
-        xModuleBallistic.FilePath = ballisticsPath;
-        xModule.FilePath = inputPath;
-        xModule.FileName = fileName;
+        PrepareMission();
+        
+        xModule = new XModule(missionHandler.GetMissionXmlPath());
+        xModuleBallistic = new XModule(missionHandler.GetBallisticCalculatorXmlPath());
+        StartCoroutine(GetAllowedDevices());
+    }
+    
+
+    private void PrepareMission()
+    {
+        if (!missionHandler.mission.allowedBallisticCalculator)
+        {
+            tabSystem.DeactivateTab(TabType.Ballistic);
+        }
+        if (!missionHandler.mission.allowedUnitCreation)
+        {
+            tabSystem.DeactivateTab(TabType.UnitCreation);
+        }
+        if (!missionHandler.mission.allowedCode)
+        {
+            tabSystem.DeactivateTab(TabType.CodeEditor);
+        }
     }
 
-    private void Update()
+    public List<Device> GetDevices()
     {
-#if NO_SERVER
-        if (addedTelemetryFile)
-        {
-            addedTelemetryFile = false;
-            VisualizeTelemetry(Application.dataPath + "/Out" + "/log.log");
-        }
-#else
-        // TODO: server logic
-#endif
+        return missionHandler.devices;
     }
+    
+    private IEnumerator GetAllowedDevices()
+    {
+        while (missionHandler.isReady != 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        devicesGot = true;
+    }
+    
     public void TestImage(string url = @"https://avatars.mds.yandex.net/i?id=9a7f15bfd1db79112f1fd527886da06e_l-4255244-images-thumbs&n=13")
     {
         Debug.Log(Application.dataPath);
-        _connectionsModule.DownloadImage(url, Application.dataPath + "/Out" + "/test.png");
+        //_connectionsModule.DownloadImage(url, Application.dataPath + "/Out" + "/test.png");
     }
 
     private void VisualizeTelemetry(string path)
     {
-        LogParser parser = FindFirstObjectByType<LogParser>();
-        TelemetryVisualizer vs = FindFirstObjectByType<TelemetryVisualizer>();
+        var parser = FindFirstObjectByType<LogParser>();
+        var vs = FindFirstObjectByType<TelemetryVisualizer>();
         parser.ParseLogFile(path);
         vs.Visualize(parser.telemetryDataList);
     }
+    
+    public void ExecuteModel()
+    {
+        xModule.Reload();
+        List<IXHandler> handlers = unitCreationHandler.CollectParts();
+        foreach (IXHandler handler in handlers)
+        {
+            handler.CallBack();
+        }
+        missionHandler.StartMissionCalculation(xModule.ToString());
+        xModule.LogDocument();
+        Debug.LogWarning("No server implemented, but xml generated");
+    }
+
+    public void ShowResults()
+    {
+        StartCoroutine(missionHandler.GetMissionResults());
+    }
+    
 
     public void GenerateFinalXml()
     {
