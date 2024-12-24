@@ -26,9 +26,9 @@ namespace XML
                 Debug.LogError("No module for object found");
                 return;
             }
-            string cleaned = Regex.Replace(codeText.text, @"[^a-zA-Zа-яА-Я0-9_+\-*/%=<>(){}\[\] :.,]", "");
-            string code = "<![CDATA[\n" + cleaned + "]]>";
-            _module.InsertInnerValue( xpath, code);
+            //string cleaned = Regex.Replace(codeText.text, @"[^a-zA-Zа-яА-Я0-9_+\-*/%=<>(){}\[\] :.,]", "");
+            //string code = "<![CDATA[\n" + codeText.text + "\n]]>";
+            _module.InsertInnerRawValue( xpath, codeText.text);
         }
     }
 }

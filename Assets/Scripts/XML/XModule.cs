@@ -52,6 +52,21 @@ namespace XML
             node.InnerText = value;
         }
         
+        public void InsertInnerRawValue(string xpath, string value)
+        {
+            XmlNode node = _document.SelectSingleNode(xpath);
+
+            if (node == null)
+            {
+                Debug.LogError($"Cannot find element by xpath: {xpath}");
+                return;
+            }
+            value = value.Replace("\u200b", "");
+            node.RemoveAll();
+            XmlCDataSection cdataSection = _document.CreateCDataSection( value + "\n");
+            node.AppendChild(cdataSection);
+        }
+        
         /// <summary>
         /// Inserts values into existing attribute by following xpath
         /// </summary>

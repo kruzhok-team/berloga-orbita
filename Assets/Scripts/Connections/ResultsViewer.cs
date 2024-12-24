@@ -1,11 +1,7 @@
-using System.Collections;
 using UnityEngine;
 
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
-using System.IO;
 using TMPro;
 
 namespace Connections.Results
@@ -14,8 +10,8 @@ namespace Connections.Results
     public class ServerResponse
     {
         public List<string> images;
-        public List<string> log;
-        public List<string> xml;
+        public string log;
+        public string xml;
     }
 
 
@@ -24,18 +20,44 @@ namespace Connections.Results
         public Transform contentPanel; // Панель, где будут созданы ссылки
         public GameObject linkPrefab; // Префаб для отображения ссылки (например, текст или кнопка)
 
-        public void FetchAndDisplayFiles(string text)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns>log lile full url</returns>
+        public string FetchAndDisplayFiles(string text)
         {
+            RemoveAllChildren();
             ServerResponse response = JsonUtility.FromJson<ServerResponse>(text);
-
+            
+            {
+                string xmlPath = response.xml;
+                string trimmedPath = xmlPath.Substring(xmlPath.IndexOf('-') + 1);
+                CreateLink("Xml: " + trimmedPath, xmlPath);
+            }
+            
             foreach (string imagePath in response.images)
             {
-                CreateLink("Image: " + imagePath, imagePath);
+                string trimmedPath = imagePath.Substring(imagePath.IndexOf('-') + 1);
+                CreateLink("Image: " + trimmedPath, imagePath);
             }
 
-            foreach (string logPath in response.log)
             {
-                CreateLink("Log: " + logPath, logPath);
+                string logPath = response.log;
+                string trimmedPath = logPath.Substring(logPath.IndexOf('-') + 1);
+                CreateLink("Log: " + trimmedPath, logPath);
+                return ConnectionsModule.HostUrl + logPath;
+
+            }
+            
+        }
+        
+        private void RemoveAllChildren()
+        {
+            for (int i = gameObject.transform.childCount - 1; i >= 0; i--)
+            {
+                GameObject child = gameObject.transform.GetChild(i).gameObject;
+                Destroy(child);
             }
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Xml;
 using UnityEngine;
@@ -36,16 +37,20 @@ namespace Connections
             var jsonData = JsonUtility.FromJson<JsonResponse>(jsonResponse);
             string xmlString = jsonData.data;
             
-            string filePath = Application.dataPath + "/devices.xml";
+            string filePath = Application.persistentDataPath + "/devices.xml";
             
             WriteToFile(filePath, xmlString); // crutch
             
             XmlDocument xmlDoc = new XmlDocument();
+            Debug.Log(xmlDoc.OuterXml);
+            
             xmlDoc.Load(filePath);
             
             XmlNodeList deviceNodes = xmlDoc.GetElementsByTagName("device");
+            
             foreach (XmlNode deviceNode in deviceNodes)
             {
+                Debug.Log(deviceNode.OuterXml);
                 string name = deviceNode.Attributes["name"].Value;
                 string fullName = deviceNode.Attributes["full_name"].Value;
                 string code = deviceNode.Attributes["code"].Value;
@@ -59,18 +64,19 @@ namespace Connections
                 XmlNode trafficGenerationNode = deviceNode.SelectSingleNode("traffic_generation");
                 XmlNode criticalTemperatureNode = deviceNode.SelectSingleNode("critical_temperature");
                 
+                Debug.Log(name + " : " + code + " : " + fullName);
                 Device device = new Device();
                 device.Name = name;
                 device.FullName = fullName;
                 device.Code = code;
                 device.Type = typeNode?.InnerText;
-                device.Mass = double.Parse(massNode?.InnerText ?? string.Empty);
-                device.Volume = double.Parse(volumeNode?.InnerText  ?? string.Empty);
-                device.PowerGeneration = int.Parse(powerGenerationNode?.InnerText  ?? string.Empty);
-                device.PeriodMin = int.Parse(periodMinNode?.InnerText  ?? string.Empty);
-                device.PeriodMax = int.Parse(periodMaxNode?.InnerText  ?? string.Empty);
-                device.TrafficGeneration = int.Parse(trafficGenerationNode?.InnerText  ?? string.Empty);
-                device.CriticalTemperature = int.Parse(criticalTemperatureNode?.InnerText  ?? string.Empty);
+                device.Mass = double.Parse(massNode?.InnerText ?? "0", CultureInfo.InvariantCulture);
+                device.Volume = double.Parse(volumeNode?.InnerText  ?? "0", CultureInfo.InvariantCulture);
+                device.PowerGeneration = int.Parse(powerGenerationNode?.InnerText  ?? "0");
+                device.PeriodMin = int.Parse(periodMinNode?.InnerText  ?? "0");
+                device.PeriodMax = int.Parse(periodMaxNode?.InnerText  ?? "0");
+                device.TrafficGeneration = int.Parse(trafficGenerationNode?.InnerText  ?? "0");
+                device.CriticalTemperature = int.Parse(criticalTemperatureNode?.InnerText  ?? "0");
                 devices.Add(device);
             }
             return devices;

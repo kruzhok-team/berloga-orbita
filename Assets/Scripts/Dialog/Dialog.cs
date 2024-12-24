@@ -13,8 +13,7 @@ public class Dialog : MonoBehaviour, IPointerClickHandler
     void Start()
     {
         dialogSystem = GetComponent<DialogSystem>();
-        //NextLine();
-
+        NextLine();
     }
 
     private void EndDialog()
@@ -27,6 +26,7 @@ public class Dialog : MonoBehaviour, IPointerClickHandler
         if (currentLine >= lines.Count)
         {
             EndDialog();
+            Destroy(gameObject);
             return; 
         }
         dialogSystem.WriteLine(lines[currentLine++]);

@@ -20,12 +20,13 @@ namespace Menu
     
     public class MissionHandler : MonoBehaviour
     {
-        [SerializeField] public string lastMissionId;
+        [SerializeField] public string lastMissionId = null;
         public Mission mission;
         
         public ConnectionsModule _server { get; private set; }
         
         public List<Device> devices = null;
+        
         
         public int isReady = 1; // 0 = ready
     
@@ -51,12 +52,19 @@ namespace Menu
         public void StartMissionCalculation(string xml)
         {
             // TODO: after callback say that we ready, and save id
-            StartCoroutine(_server.PostCalculation("planets", xml, null));
+            lastMissionId = null;
+            StartCoroutine(_server.PostCalculation("planets", xml, (s => lastMissionId = s)));
         }
 
         public IEnumerator GetMissionResults()
         {
             // TODO: collect status first
+            while (lastMissionId == null)
+            {
+                yield return new WaitForSeconds(0.2f);
+            }
+
+            StartCoroutine(_server.GetCalculationStatus("planets", lastMissionId));
             StartCoroutine(_server.GetCalculationResult("planets", lastMissionId));
             while (!_server.resultGot)
             {
@@ -64,7 +72,8 @@ namespace Menu
             }
 
             var rv = FindFirstObjectByType<ResultsViewer>();
-            rv.FetchAndDisplayFiles(_server.result);
+            var logUrl = rv.FetchAndDisplayFiles(_server.result);
+            StartCoroutine(_server.DownloadAndSaveLog(logUrl));
         }
 
         public string GetMissionXmlPath()

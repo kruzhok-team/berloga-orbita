@@ -70,17 +70,13 @@ public sealed class GameManager : MonoBehaviour
         devicesGot = true;
     }
     
-    public void TestImage(string url = @"https://avatars.mds.yandex.net/i?id=9a7f15bfd1db79112f1fd527886da06e_l-4255244-images-thumbs&n=13")
-    {
-        Debug.Log(Application.dataPath);
-        //_connectionsModule.DownloadImage(url, Application.dataPath + "/Out" + "/test.png");
-    }
 
-    private void VisualizeTelemetry(string path)
+    public void VisualizeTelemetry(GameObject panel)
     {
+        panel.SetActive(true);
         var parser = FindFirstObjectByType<LogParser>();
         var vs = FindFirstObjectByType<TelemetryVisualizer>();
-        parser.ParseLogFile(path);
+        parser.ParseLogFile(ConnectionsModule.logFilePath);
         vs.Visualize(parser.telemetryDataList);
     }
     

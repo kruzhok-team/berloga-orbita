@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -43,6 +44,8 @@ namespace Connections
     
     public class ConnectionsModule : MonoBehaviour
     {
+        public static string logFilePath = null;
+        
         public const String HostUrl = "http://orbita.kruzhok.org/";
         private readonly byte[] jsonData = Encoding.UTF8.GetBytes("{\"model\":\"planets\"}");
 
@@ -51,6 +54,13 @@ namespace Connections
         
         public string result = null;
         public bool resultGot = false;
+        
+        public bool logDownloaded = false;
+
+        public void Awake()
+        {
+            logFilePath = Path.Combine(Application.persistentDataPath, "log.log");
+        }
 
         public bool IsConnectionAvailable()
         {
@@ -63,12 +73,40 @@ namespace Connections
 
             return true;
         }
-
-        public async Task<bool> DownloadImage(string url, string savePath)
+        public IEnumerator DownloadAndSaveLog(string url)
         {
-            await ImageDownloader.DownloadAndSaveImageAsync(url, savePath);
-            return true;
+            // Получаем путь к кэшу
+            using (UnityWebRequest request = UnityWebRequest.Get(url))
+            {
+                yield return request.SendWebRequest();
+
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    try
+                    {
+                        File.WriteAllBytes(logFilePath, request.downloadHandler.data);
+                        Debug.Log($"Файл успешно сохранён по пути: {logFilePath}");
+                    }
+                    catch (IOException e)
+                    {
+                        Debug.LogError($"Ошибка записи файла: {e.Message}");
+                    }
+                }
+                else
+                {
+                    Debug.LogError($"Ошибка загрузки файла: {request.error}");
+                }
+            }
+
+            logDownloaded = true;
         }
+        
+        public void StartDownloadLog(string url)
+        {
+            logDownloaded = false;
+            StartCoroutine(DownloadAndSaveLog(url));
+        }
+        
 
         public IEnumerator GetServerInfo()
         {
@@ -117,8 +155,6 @@ namespace Connections
         
 
         // GET /devices
-        
-        
         public IEnumerator GetDevices()
         {
             string url = HostUrl + "devices";
@@ -138,7 +174,7 @@ namespace Connections
                 List<Device> devices = XmlProcessor.ParseDevicesFromJson(responseText);
                 foreach (var device in devices)
                 {
-                    Debug.Log($"Device Name: {device.Name}, FullName: {device.FullName}");
+                  //  Debug.Log($"Device Name: {device.Name}, FullName: {device.FullName}");
                 }
                 this.devices = devices;
             }
@@ -149,6 +185,7 @@ namespace Connections
 
             devicesGot = true;
         }
+        
 
         // POST /calculation
         public IEnumerator PostCalculation(string model, string xmlData, Action<string> callback)
@@ -180,8 +217,6 @@ namespace Connections
                 {
                     Debug.LogError("Failed to parse JSON");
                 }
-                
-                
             }
             else
             {
@@ -189,6 +224,7 @@ namespace Connections
             }
         }
 
+        
         // GET /status
         public IEnumerator GetCalculationStatus(string model, string id)
         {
@@ -215,6 +251,7 @@ namespace Connections
             }
         }
 
+        
         // GET /result
         public IEnumerator GetCalculationResult(string model, string id)
         {

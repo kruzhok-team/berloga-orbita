@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using UnityEngine;
 
@@ -84,7 +85,7 @@ namespace TelemetryVisualization
         {
             // Пример значения: H=049920.9
             string valueString = valuePart.Split("=")[1];
-            return float.Parse(valueString);
+            return float.Parse(valueString, CultureInfo.InvariantCulture);
         }
     }
 }
