@@ -132,6 +132,7 @@ namespace XML
 
         public void LogDocument()
         {
+            Debug.LogWarning("< watch here if something with xml >:");
             Debug.Log(_document.OuterXml);
         }
  

@@ -29,6 +29,10 @@ namespace Connections.Results
         {
             RemoveAllChildren();
             ServerResponse response = JsonUtility.FromJson<ServerResponse>(text);
+            if (text == null || response == null)
+            {
+                return "";
+            }
             
             {
                 string xmlPath = response.xml;

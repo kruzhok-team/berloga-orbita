@@ -42,7 +42,6 @@ namespace Connections
             WriteToFile(filePath, xmlString); // crutch
             
             XmlDocument xmlDoc = new XmlDocument();
-            Debug.Log(xmlDoc.OuterXml);
             
             xmlDoc.Load(filePath);
             
@@ -50,7 +49,6 @@ namespace Connections
             
             foreach (XmlNode deviceNode in deviceNodes)
             {
-                Debug.Log(deviceNode.OuterXml);
                 string name = deviceNode.Attributes["name"].Value;
                 string fullName = deviceNode.Attributes["full_name"].Value;
                 string code = deviceNode.Attributes["code"].Value;
@@ -64,7 +62,6 @@ namespace Connections
                 XmlNode trafficGenerationNode = deviceNode.SelectSingleNode("traffic_generation");
                 XmlNode criticalTemperatureNode = deviceNode.SelectSingleNode("critical_temperature");
                 
-                Debug.Log(name + " : " + code + " : " + fullName);
                 Device device = new Device();
                 device.Name = name;
                 device.FullName = fullName;

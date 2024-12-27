@@ -90,7 +90,6 @@ public sealed class GameManager : MonoBehaviour
         }
         missionHandler.StartMissionCalculation(xModule.ToString());
         xModule.LogDocument();
-        Debug.LogWarning("No server implemented, but xml generated");
     }
 
     public void ShowResults()
