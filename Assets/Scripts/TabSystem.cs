@@ -71,7 +71,7 @@ public class TabSystem : MonoBehaviour
     {
         foreach (var tab in tabs.Where(tab => tab.type == type))
         {
-            tab.panel.SetActive(false);
+            tab.trigger.onClick.RemoveAllListeners(); // TODO: check
         }
     }
 

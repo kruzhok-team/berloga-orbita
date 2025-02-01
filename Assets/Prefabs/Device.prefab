@@ -63,14 +63,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dabf0113294a1ca483002aeb3992c58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  device:
-    name: 
-    code: 
-    mass: 0
-    volume: 0
-    energy: 0
-    criticalTemperature: 0
-    imagePath: 
   nameText: {fileID: 606494603832968062}
   image: {fileID: 4258448264326671757}
 --- !u!1 &2914403035030975919
@@ -110,7 +102,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 60, y: 60}
+  m_SizeDelta: {x: 58, y: 58}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &1914822476275135509
 CanvasRenderer:
@@ -210,7 +202,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: -17.402, y: -60}
-  m_SizeDelta: {x: 94.8037, y: 31.2422}
+  m_SizeDelta: {x: 93.6951, y: 36.7035}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &9059592343685346049
 CanvasRenderer:
@@ -267,13 +259,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 15.15
+  m_fontSize: 12.9
   m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 8
-  m_fontSizeMax: 30
-  m_fontStyle: 0
+  m_fontSizeMax: 20
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 256
   m_textAlignment: 65535
@@ -305,7 +297,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0, z: 0, w: 10.101465}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0

@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Connections;
 using Connections.Results;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -21,39 +24,54 @@ namespace Menu
     public class MissionHandler : MonoBehaviour
     {
         [SerializeField] public string lastMissionId = null;
-        public Mission mission;
+        public TextMeshProUGUI maxMassField;
+        public TextMeshProUGUI maxVolumeField;
+        public TextMeshProUGUI startHeightField;
         
-        public ConnectionsModule _server { get; private set; }
+        public string missionName;
         
-        public List<Device> devices = null;
+        public Mission Mission { get; private set; } = new Mission();
+        private ConnectionsModule Server { get; set; }
+        public List<Device> Devices { get; private set; } = new List<Device>();
         
         
         public int isReady = 1; // 0 = ready
     
         private void Start()
         {
-            _server = gameObject.AddComponent<ConnectionsModule>();
-            StartCoroutine(_server.GetDevices()); // this need very much
-            StartCoroutine(GetAllowedDevices());
+            Server = gameObject.AddComponent<ConnectionsModule>();
+            StartCoroutine(Server.GetDevices());
+            StartCoroutine(Server.GetSample("planets", missionName));
+            StartCoroutine(Server.GetParameters("planets", missionName));
+            StartCoroutine(WaitForResults());
         }
         
         
-        private IEnumerator GetAllowedDevices()
+        private IEnumerator WaitForResults()
         {
-            while (!_server.devicesGot)
+            while (!Server.devicesGot && !Server.sampleGot && !Server.settingsGot)
             {
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.1f);
             }
-            devices = _server.devices;
+            foreach (var device in Server.devices.Where(device => Server.settings.devices.Contains(device.Name)))
+            {
+                Devices.Add(device);
+            }
+            
+            
             isReady--;
-            // TODO: here
+            // maxMassField.SetText(Server.settings.maxMass); // TODO: not implemented on server
+            maxVolumeField.SetText(Server.settings.probe_radius); // TODO: in server strange output
+            startHeightField.SetText(Server.settings.start_height.
+                First().ToString(CultureInfo.InvariantCulture)); // TODO: randomize parameters, and let server know what is real
+            //TODO: use xml and program from Server.settings
         }
 
         public void StartMissionCalculation(string xml)
         {
             // TODO: after callback say that we ready, and save id
             lastMissionId = null;
-            StartCoroutine(_server.PostCalculation("planets", xml, (s => lastMissionId = s)));
+            StartCoroutine(Server.PostCalculation("planets", xml, (s => lastMissionId = s)));
         }
 
         public IEnumerator GetMissionResults()
@@ -64,21 +82,21 @@ namespace Menu
                 yield return new WaitForSeconds(0.2f);
             }
 
-            StartCoroutine(_server.GetCalculationStatus("planets", lastMissionId));
-            StartCoroutine(_server.GetCalculationResult("planets", lastMissionId));
-            while (!_server.resultGot)
+            StartCoroutine(Server.GetCalculationStatus("planets", lastMissionId));
+            StartCoroutine(Server.GetCalculationResult("planets", lastMissionId));
+            while (!Server.resultGot)
             {
                 yield return new WaitForSeconds(1f);
             }
 
             var rv = FindFirstObjectByType<ResultsViewer>();
-            var logUrl = rv.FetchAndDisplayFiles(_server.result);
-            StartCoroutine(_server.DownloadAndSaveLog(logUrl));
+            var logUrl = rv.FetchAndDisplayFiles(Server.result);
+            StartCoroutine(Server.DownloadAndSaveLog(logUrl));
         }
 
         public string GetMissionXmlPath()
         {
-            if (mission.missionName == "moon")
+            if (Mission.missionName == "moon")
             {
                 CopyFileFromResources("Xml/Moon", Application.persistentDataPath + "/moon.xml");
                 return Application.persistentDataPath + "/moon.xml";
@@ -90,28 +108,9 @@ namespace Menu
 
         public string GetBallisticCalculatorXmlPath()
         {
-            CopyFileFromResources("ballistics", Application.persistentDataPath + "/ballistics.xml");
-            return Application.persistentDataPath + "/ballistic_calculator.xml";
-        }
-
-        private void CopyFile(string sourcePath, string destinationPath)
-        {
-            if (File.Exists(sourcePath))
-            {
-                try
-                {
-                    File.Copy(sourcePath, destinationPath, overwrite: true);
-                    Debug.Log($"Файл успешно скопирован из {sourcePath} в {destinationPath}");
-                }
-                catch (IOException ex)
-                {
-                    Debug.LogError($"Ошибка при копировании файла: {ex.Message}");
-                }
-            }
-            else
-            {
-                Debug.LogError($"Исходный файл не найден: {sourcePath}");
-            }
+            var path = Application.persistentDataPath + "/ballistic_calculator.xml";
+            CopyFileFromResources("ballistics", path);
+            return path;
         }
         
         

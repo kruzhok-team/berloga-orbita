@@ -5,6 +5,7 @@ using TelemetryVisualization;
 using UnityEngine;
 using Connections;
 using Menu;
+using UnitCreation;
 using UnityEngine.Serialization;
 using XML;
 
@@ -22,17 +23,21 @@ public sealed class GameManager : MonoBehaviour
     private IXHandler ballisticHandler  = null;
     private TabSystem tabSystem = null;
 
-
+    public static GameManager Instance { get; private set; }
+    
     private void Awake()
     {
+        Instance = this;
+        Application.targetFrameRate = 60;
         devicePrefixPath = "Devices/";
     }
     private void Start()
     {
         missionHandler = GetComponent<MissionHandler>();
         tabSystem = FindFirstObjectByType<TabSystem>();
+        StartCoroutine(FindFirstObjectByType<ContentFiller>().FetchContent());
         RegisterHandlers();
-        PrepareMission();
+        StartCoroutine(PrepareMission());
         
         xModule = new XModule(missionHandler.GetMissionXmlPath());
         xModuleBallistic = new XModule(missionHandler.GetBallisticCalculatorXmlPath());
@@ -40,17 +45,21 @@ public sealed class GameManager : MonoBehaviour
     }
     
 
-    private void PrepareMission()
+    private IEnumerator PrepareMission()
     {
-        if (!missionHandler.mission.allowedBallisticCalculator)
+        while (missionHandler.isReady != 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        if (!missionHandler.Mission.allowedBallisticCalculator)
         {
             tabSystem.DeactivateTab(TabType.Ballistic);
         }
-        if (!missionHandler.mission.allowedUnitCreation)
+        if (!missionHandler.Mission.allowedUnitCreation)
         {
             tabSystem.DeactivateTab(TabType.UnitCreation);
         }
-        if (!missionHandler.mission.allowedCode)
+        if (!missionHandler.Mission.allowedCode)
         {
             tabSystem.DeactivateTab(TabType.CodeEditor);
         }
@@ -58,7 +67,7 @@ public sealed class GameManager : MonoBehaviour
 
     public List<Device> GetDevices()
     {
-        return missionHandler.devices;
+        return missionHandler.Devices;
     }
     
     private IEnumerator GetAllowedDevices()
@@ -129,6 +138,7 @@ public sealed class GameManager : MonoBehaviour
     public void BallisticCalculatorBtnPushDown()
     {
         xModuleBallistic.Reload();
+        ballisticHandler ??= FindFirstObjectByType<XHandlerInsertValue>();
         ballisticHandler.CallBack();
         xModuleBallistic.LogDocument();
         Debug.LogWarning("Correctly generated XML output, but logic not implemented as no server exist");

@@ -14,7 +14,8 @@ public class StartUpChecker : MonoBehaviour
         
         //StartCoroutine(module.GetServerInfo());
         ////StartCoroutine(module.GetDevices());
-       StartCoroutine(module.GetParameters());
+       //StartCoroutine(module.GetParameters("planets", "Moon"));
+       //StartCoroutine(module.GetSample("planets", "Moon"));
        /*
        Debug.Log(xModule.ToString());
        StartCoroutine(module.PostCalculation("planets_gravity", xModule.ToString(), 

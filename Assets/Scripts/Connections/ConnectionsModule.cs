@@ -8,6 +8,7 @@ using System.Xml;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
+using Newtonsoft.Json;
 
 namespace Connections
 {
@@ -33,15 +34,33 @@ namespace Connections
     [System.Serializable]
     public class ParametersResponse
     {
-        public string data;
+       
+        public List<string> devices = new List<string>();
+        public bool need_construction;
+        public string probe_radius;
+        public List<double> start_height = new List<double>();
+        public string program;
     }
-    
+
+    [System.Serializable]
     public class CalculationResponse
     {
         public string id;
     }
+
+    [System.Serializable]
+    public class ModelMission
+    {
+        public string model;
+        public string mission;
+    }
     
-    
+    [System.Serializable]
+    public class WrappedData
+    {
+        public string data;
+    }
+
     public class ConnectionsModule : MonoBehaviour
     {
         public static string logFilePath = null;
@@ -50,10 +69,15 @@ namespace Connections
         private readonly byte[] jsonData = Encoding.UTF8.GetBytes("{\"model\":\"planets\"}");
 
         public List<Device> devices = null;
+        public ParametersResponse settings = null;
+        public string sample = null;
+        
         public bool devicesGot = false;
         
         public string result = null;
         public bool resultGot = false;
+        public bool settingsGot = false;
+        public bool sampleGot = false;
         
         public bool logDownloaded = false;
 
@@ -124,14 +148,19 @@ namespace Connections
         }
 
         // GET /parameters
-        public IEnumerator GetParameters()
+        public IEnumerator GetParameters(string model, string mission)
         {
             string url = HostUrl + "parameters";
             
             UnityWebRequest request = UnityWebRequest.Get(url);
             request.SetRequestHeader("Content-Type", "application/json");
             
-            request.uploadHandler = new UploadHandlerRaw(jsonData);
+            var query = new ModelMission() { model = model, mission = mission};
+            
+            string jsonBody = JsonUtility.ToJson(query);
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             
             yield return request.SendWebRequest();
@@ -139,18 +168,56 @@ namespace Connections
             if (request.result == UnityWebRequest.Result.Success)
             {
                 string responseText = request.downloadHandler.text;
-                var devices = XmlProcessor.ParseParametersFromJson(responseText);
+                try
+                {
+                    settings = JsonConvert.DeserializeObject<ParametersResponse>(responseText);
+                    settingsGot = true;
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError("JSON Parsing Error: " + e.Message);
+                }
+            }
+            else
+            {
+                Debug.LogError("Error: " + request.error);
+            }
+            
+        }
+
+        // GET /sample
+        public IEnumerator GetSample(string model, string mission)
+        {
+            string url = HostUrl + "sample";
+            
+            UnityWebRequest request = UnityWebRequest.Get(url);
+            request.SetRequestHeader("Content-Type", "application/json");
+            
+            var query = new ModelMission() { model = model, mission = mission};
+            
+            string jsonBody = JsonUtility.ToJson(query);
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsonBody);
+
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            
+            yield return request.SendWebRequest();
+            
+            if (request.result == UnityWebRequest.Result.Success)
+            {
+                string responseText = request.downloadHandler.text;
                 Debug.Log("Response: " + responseText);
                 
-                var jsonResponse = JsonUtility.FromJson<ParametersResponse>(responseText);
+                var jsonResponse = JsonUtility.FromJson<WrappedData>(responseText);
+                sample = jsonResponse.data;
+                sampleGot = true;
+                // TODO: прописать геты всего
             }
             else
             {
                 Debug.LogError("Error: " + request.error);
             }
         }
-
-        // Структура для обработки ответа
        
         
 
@@ -182,6 +249,8 @@ namespace Connections
             {
                 Debug.LogError("Error: " + request.error);
             }
+            
+            
 
             devicesGot = true;
         }

@@ -90,7 +90,14 @@ namespace Connections
             WriteToFile(filePath, xmlString); // crutch
             
             XmlDocument xmlDoc = new XmlDocument();
-            xmlDoc.Load(filePath);
+            try
+            {
+                xmlDoc.Load(filePath);
+            }
+            catch (XmlException ex)
+            {
+                Debug.Log(ex.Message);
+            }
             
             Debug.Log(xmlDoc.OuterXml);
             

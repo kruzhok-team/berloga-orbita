@@ -12,21 +12,14 @@ namespace UnitCreation
         
         private List<Device> _devices;
         
-        private GameManager _manager;
-    
-        private void Start()
-        {
-            _manager = FindFirstObjectByType<GameManager>();
-            StartCoroutine(FetchContent());
-        }
 
-        private IEnumerator FetchContent()
+        public IEnumerator FetchContent()
         {
             while (!GameManager.devicesGot)
             {
                 yield return new WaitForSeconds(0.1f);
             }
-            _devices = _manager.GetDevices();
+            _devices = GameManager.Instance.GetDevices();
             FillContent();
         }
     
