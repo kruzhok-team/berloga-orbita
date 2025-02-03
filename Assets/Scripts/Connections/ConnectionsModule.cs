@@ -209,7 +209,7 @@ namespace Connections
                 Debug.Log("Response: " + responseText);
                 
                 var jsonResponse = JsonUtility.FromJson<WrappedData>(responseText);
-                sample = jsonResponse.data;
+                this.sample = jsonResponse.data;
                 sampleGot = true;
                 // TODO: прописать геты всего
             }

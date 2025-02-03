@@ -3,19 +3,17 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using Connections;
 using Connections.Results;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Menu
 {
     [System.Serializable]
     public class Mission
     { 
-        public string missionName;
+        //public string missionName;
         public bool allowedBallisticCalculator = true;
         public bool allowedUnitCreation = true;
         public bool allowedCode = true;
@@ -31,7 +29,7 @@ namespace Menu
         public string missionName;
         
         public Mission Mission { get; private set; } = new Mission();
-        private ConnectionsModule Server { get; set; }
+        public ConnectionsModule Server { get; private set; }
         public List<Device> Devices { get; private set; } = new List<Device>();
         
         
@@ -57,14 +55,15 @@ namespace Menu
             {
                 Devices.Add(device);
             }
+
+            Mission.allowedUnitCreation = Server.settings.need_construction;
             
-            
-            isReady--;
             // maxMassField.SetText(Server.settings.maxMass); // TODO: not implemented on server
             maxVolumeField.SetText(Server.settings.probe_radius); // TODO: in server strange output
             startHeightField.SetText(Server.settings.start_height.
                 First().ToString(CultureInfo.InvariantCulture)); // TODO: randomize parameters, and let server know what is real
-            //TODO: use xml and program from Server.settings
+            
+            isReady--;
         }
 
         public void StartMissionCalculation(string xml)
@@ -96,13 +95,10 @@ namespace Menu
 
         public string GetMissionXmlPath()
         {
-            if (Mission.missionName == "moon")
-            {
-                CopyFileFromResources("Xml/Moon", Application.persistentDataPath + "/moon.xml");
-                return Application.persistentDataPath + "/moon.xml";
-            }
-    
-            return null;
+            var savePath = Application.persistentDataPath + "/main.xml";
+            SaveFileToPath(savePath, Server.sample);
+            Debug.LogWarning(savePath);
+            return savePath;
         }
         
 
@@ -112,6 +108,19 @@ namespace Menu
             CopyFileFromResources("ballistics", path);
             return path;
         }
+
+        private void SaveFileToPath(string path, string text)
+        {
+            try
+            {
+                File.WriteAllText(path, text);
+            }
+            catch (IOException ex)
+            {
+                Debug.LogError($"Get error while writing: {ex.Message}");
+            }
+        }
+        
         
         
         /// <summary>
@@ -123,18 +132,9 @@ namespace Menu
         {
             // Загрузка файла из Resources
             TextAsset resourceFile = Resources.Load<TextAsset>(fileName);
-            if (resourceFile != null)
+            if (resourceFile)
             {
-                try
-                {
-                    // Запись содержимого файла в целевой путь
-                    File.WriteAllText(destinationPath, resourceFile.text);
-                    Debug.Log($"Файл успешно скопирован в {destinationPath}");
-                }
-                catch (IOException ex)
-                {
-                    Debug.LogError($"Ошибка при записи файла: {ex.Message}");
-                }
+                SaveFileToPath(destinationPath, resourceFile.text);
             }
             else
             {

@@ -61,7 +61,7 @@ namespace XML
                 Debug.LogError($"Cannot find element by xpath: {xpath}");
                 return;
             }
-            value = value.Replace("\u200b", "");
+            //value = value.Replace("\u200b", "");
             node.RemoveAll();
             XmlCDataSection cdataSection = _document.CreateCDataSection( value + "\n");
             node.AppendChild(cdataSection);

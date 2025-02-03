@@ -10,6 +10,8 @@ namespace XML
     {
         public GameObject prefab;
         public XHandlerInsertCode xCode;
+        public SettingsParamsHandler settings;
+        
         
         private Transform _transform;
         private List<UnitItem> _items = new List<UnitItem>();
@@ -63,6 +65,7 @@ namespace XML
         {
             List<IXHandler> handlers = CollectUnt();
             handlers.Add(xCode);
+            handlers.Add(settings);
             return handlers;
 
         }

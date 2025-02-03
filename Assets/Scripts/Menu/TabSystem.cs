@@ -72,6 +72,14 @@ public class TabSystem : MonoBehaviour
         foreach (var tab in tabs.Where(tab => tab.type == type))
         {
             tab.trigger.onClick.RemoveAllListeners(); // TODO: check
+            if (activeTab == tab)
+            {
+                foreach (var notActive in tabs.Where(notActive => notActive.type != type))
+                {
+                    ActivateTab(notActive);
+                    break;
+                }
+            }
         }
     }
 

@@ -38,9 +38,6 @@ public sealed class GameManager : MonoBehaviour
         StartCoroutine(FindFirstObjectByType<ContentFiller>().FetchContent());
         RegisterHandlers();
         StartCoroutine(PrepareMission());
-        
-        xModule = new XModule(missionHandler.GetMissionXmlPath());
-        xModuleBallistic = new XModule(missionHandler.GetBallisticCalculatorXmlPath());
         StartCoroutine(GetAllowedDevices());
     }
     
@@ -51,6 +48,9 @@ public sealed class GameManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
         }
+        xModule = new XModule(missionHandler.GetMissionXmlPath());
+        xModuleBallistic = new XModule(missionHandler.GetBallisticCalculatorXmlPath());
+        
         if (!missionHandler.Mission.allowedBallisticCalculator)
         {
             tabSystem.DeactivateTab(TabType.Ballistic);
