@@ -33,7 +33,7 @@ namespace XML
             {
                 yield return new WaitForSeconds(0.1f);
             }
-           // codeText.SetText(_missionHandler.Server.settings.program);
+            // codeText.SetText(_missionHandler.Server.settings.program);
         }
         
         public void CallBack()
@@ -47,6 +47,7 @@ namespace XML
             //string cleaned = Regex.Replace(codeText.text, @"[^a-zA-Zа-яА-Я0-9_+\-*/%=<>(){}\[\] :.,]", "");
             //string code = "<![CDATA[\n" + codeText.text + "\n]]>";
             _module.InsertInnerRawValue(xpath, "\n" + codeText.text);
+            //Debug.Log(codeText.text);
         }
     }
 }
