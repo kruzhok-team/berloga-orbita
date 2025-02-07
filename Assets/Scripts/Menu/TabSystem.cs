@@ -33,17 +33,16 @@ public class TabSystem : MonoBehaviour
     private TabController activeTab;
     public List<TabController> tabs = new List<TabController>();
     
+    
     private void Start()
     {
         if (tabs.Count == 0)
         {
-            Debug.LogWarning("No Tabs Available, check inspector");
+            Debug.LogError("No Tabs Available, check inspector");
             Debug.LogWarning("For save usage component self destroys");
             Destroy(this);
             return;
         }
-        //gameObject.transform.SetAsLastSibling(); // component should be last on scene
-        
         foreach (var tab in tabs)
         {
             if (tab.trigger == null || tab.panel == null)
@@ -59,6 +58,19 @@ public class TabSystem : MonoBehaviour
         activeTab.panel.SetActive(true);
     }
 
+    public void ActivateTab(TabType tab)
+    {
+        foreach (TabController controller in tabs)
+        {
+            if (controller.type == tab)
+            {
+                ActivateTab(controller);
+                return;
+            }
+        }
+    }
+    
+    
     private void ActivateTab(TabController tab)
     {
         activeTab.panel.SetActive(false);

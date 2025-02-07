@@ -24,10 +24,10 @@ namespace UnitCreation
         private void Start()
         {
             statsCounter = FindFirstObjectByType<StatsCounter>();
-            statsCounter.AddNewDevice(device.Mass, device.Volume);
+            statsCounter.AddNewDevice(device);
             deleteBtn.onClick.AddListener(() =>
             {
-                statsCounter.RemoveDevice(device.Mass, device.Volume);
+                statsCounter.RemoveDevice(device);
                 FindFirstObjectByType<XGeneration>().RemoveItem(this);
                 Destroy(gameObject);
             });

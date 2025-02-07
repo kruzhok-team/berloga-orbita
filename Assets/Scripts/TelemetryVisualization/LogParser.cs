@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace TelemetryVisualization
@@ -20,10 +22,30 @@ namespace TelemetryVisualization
         }
     }
 
+    public class FinalResults
+    {
+        public bool IsSuccess = false;
+        public string FinalScore = null;
+    }
+
     public class LogParser : MonoBehaviour
     {
         [HideInInspector] public List<TelemetryData> telemetryDataList = new List<TelemetryData>();
 
+        public FinalResults ParseShortLogFile(string path)
+        {
+            FinalResults results = new FinalResults();
+            XDocument doc = XDocument.Parse(File.ReadAllText(path));
+            string result = doc.Root?.Descendants("result").FirstOrDefault()?.Value ?? "N/A";
+            string reason = doc.Descendants("reason").FirstOrDefault()?.Value ?? "N/A";
+            string scientificInfo = doc.Descendants("scientificinformation").FirstOrDefault()?.Value ?? "No scientific data";
+
+            Debug.Log($"Result: {result}");
+            Debug.Log($"Reason: {reason}");
+            Debug.Log($"Scientific Information: {scientificInfo}");
+            return results;
+        }
+        
         public void ParseLogFile(string filePath)
         {
             telemetryDataList.Clear();

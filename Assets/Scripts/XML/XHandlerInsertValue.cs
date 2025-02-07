@@ -53,13 +53,14 @@ namespace XML
             
             foreach (var attribute in attributes)
             {
-                string cleaned = Regex.Replace(attribute.valueRef.text, @"[^a-zA-Zа-яА-Я0-9]", "");
-
+                string cleaned = Regex.Replace(attribute.valueRef.text, @"[^a-zA-Zа-яА-Я0-9\-]", "");
+                
                 if (attribute.xpath == "//square") // TODO: should put this logic into text getter
                 {
                     // TODO: here can be no value so inner logic should check this and not allow do callback
                     cleaned = (Convert.ToDouble(cleaned) * Convert.ToDouble(cleaned) * Math.PI).ToString();
                 }
+                cleaned = cleaned.Replace(",", ".");
                 insertingValues.Add(new Pair() { key = attribute.xpath, value = cleaned});
             }
             _module.InsertInnerValues(insertingValues);

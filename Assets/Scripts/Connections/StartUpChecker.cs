@@ -6,11 +6,11 @@ using XML;
 
 public class StartUpChecker : MonoBehaviour
 {
-    private ConnectionsModule module;
+   // private ConnectionsModule module;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        module = gameObject.AddComponent(typeof(ConnectionsModule)) as ConnectionsModule;
+       // module = gameObject.AddComponent(typeof(ConnectionsModule)) as ConnectionsModule;
         
         //StartCoroutine(module.GetServerInfo());
         ////StartCoroutine(module.GetDevices());
@@ -38,9 +38,9 @@ public class StartUpChecker : MonoBehaviour
     private IEnumerator Waiting(string id)
     {
         yield return new WaitForSeconds(1);
-        StartCoroutine(module.GetCalculationStatus("planets_gravity", id));
+        //StartCoroutine(module.GetCalculationStatus("planets_gravity", id));
         yield return new WaitForSeconds(1);
-        StartCoroutine(module.GetCalculationStatus("planets_gravity", id));
-        StartCoroutine(module.GetCalculationResult("planets_gravity", id));
+        //StartCoroutine(module.GetCalculationStatus("planets_gravity", id));
+        //StartCoroutine(module.GetCalculationResult("planets_gravity", id));
     }
 }

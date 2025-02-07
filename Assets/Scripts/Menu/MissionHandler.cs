@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Connections;
-using Connections.Results;
 using TMPro;
 using UnityEngine;
 
@@ -21,10 +20,12 @@ namespace Menu
     
     public class MissionHandler : MonoBehaviour
     {
+        public BaseParameterSetup baseParameterSetup;
         [SerializeField] public string lastMissionId = null;
         public TextMeshProUGUI maxMassField;
         public TextMeshProUGUI maxVolumeField;
         public TextMeshProUGUI startHeightField;
+        public TextMeshProUGUI resultStatusField;
         
         public string missionName;
         
@@ -37,6 +38,7 @@ namespace Menu
     
         private void Start()
         {
+            isReady = 1;
             Server = gameObject.AddComponent<ConnectionsModule>();
             StartCoroutine(Server.GetDevices());
             StartCoroutine(Server.GetSample("planets", missionName));
@@ -47,9 +49,15 @@ namespace Menu
         
         private IEnumerator WaitForResults()
         {
-            while (!Server.devicesGot && !Server.sampleGot && !Server.settingsGot)
+            while (!Server.devicesGot || !Server.sampleGot || !Server.settingsGot)
             {
                 yield return new WaitForSeconds(0.1f);
+            }
+
+            if (Server.devices == null)
+            {
+                // Very bad
+                Debug.LogError("No devices got loaded!");
             }
             foreach (var device in Server.devices.Where(device => Server.settings.devices.Contains(device.Name)))
             {
@@ -57,41 +65,89 @@ namespace Menu
             }
 
             Mission.allowedUnitCreation = Server.settings.need_construction;
-            
-            // maxMassField.SetText(Server.settings.maxMass); // TODO: not implemented on server
-            maxVolumeField.SetText(Server.settings.probe_radius); // TODO: in server strange output
-            startHeightField.SetText(Server.settings.start_height.
-                First().ToString(CultureInfo.InvariantCulture)); // TODO: randomize parameters, and let server know what is real
-            
+            baseParameterSetup.RadiusSettingsSetup(Server.settings.probe_radius);
+            baseParameterSetup.HeightSettingsSetup(Server.settings.start_height);
             isReady--;
         }
 
         public void StartMissionCalculation(string xml)
         {
-            // TODO: after callback say that we ready, and save id
             lastMissionId = null;
             StartCoroutine(Server.PostCalculation("planets", xml, (s => lastMissionId = s)));
+            FindFirstObjectByType<ResultsViewer>()?.RemoveAllChildren();
         }
 
+        
         public IEnumerator GetMissionResults()
         {
-            // TODO: collect status first
+            resultStatusField.SetText("запускаем");
             while (lastMissionId == null)
             {
                 yield return new WaitForSeconds(0.2f);
             }
-
+            // collecting and awaiting completed status
             StartCoroutine(Server.GetCalculationStatus("planets", lastMissionId));
+            while (Server.calculationStatus is not { status: "completed" })
+            {
+                if (Server.statusGot)
+                {
+                    StartCoroutine(Server.GetCalculationStatus("planets", lastMissionId));
+                }
+                yield return new WaitForSeconds(0.5f);
+                
+            }
+            resultStatusField.SetText("вычисляем");
             StartCoroutine(Server.GetCalculationResult("planets", lastMissionId));
             while (!Server.resultGot)
             {
-                yield return new WaitForSeconds(1f);
+                yield return new WaitForSeconds(0.1f);
             }
-
+            resultStatusField.SetText("получен");
             var rv = FindFirstObjectByType<ResultsViewer>();
             var logUrl = rv.FetchAndDisplayFiles(Server.result);
-            StartCoroutine(Server.DownloadAndSaveLog(logUrl));
+            
+            Server.DownloadLogs(logUrl);
         }
+        
+        public void StartBallisticCalculation(string xml)
+        {
+            lastMissionId = null;
+            StartCoroutine(Server.PostCalculation("planets_gravity", xml, (s => lastMissionId = s)));
+            FindFirstObjectByType<ResultsViewer>()?.RemoveAllChildren();
+        }
+        
+        public IEnumerator GetCalculatorResults()
+        {
+            // TODO: in one function!
+            
+            resultStatusField.SetText("запускаем");
+            while (lastMissionId == null)
+            {
+                yield return new WaitForSeconds(0.2f);
+            }
+            // collecting and awaiting completed status
+            StartCoroutine(Server.GetCalculationStatus("planets_gravity", lastMissionId));
+            while (Server.calculationStatus is not { status: "completed" })
+            {
+                if (Server.statusGot)
+                {
+                    StartCoroutine(Server.GetCalculationStatus("planets_gravity", lastMissionId));
+                }
+                yield return new WaitForSeconds(0.5f);
+                
+            }
+            resultStatusField.SetText("вычисляем");
+            StartCoroutine(Server.GetCalculationResult("planets_gravity", lastMissionId));
+            while (!Server.resultGot)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            resultStatusField.SetText("получен");
+            var rv = FindFirstObjectByType<ResultsViewer>();
+            var logUrl = rv.FetchAndDisplayFiles(Server.result);
+            
+        }
+        
 
         public string GetMissionXmlPath()
         {
@@ -108,6 +164,7 @@ namespace Menu
             CopyFileFromResources("ballistics", path);
             return path;
         }
+        
 
         private void SaveFileToPath(string path, string text)
         {

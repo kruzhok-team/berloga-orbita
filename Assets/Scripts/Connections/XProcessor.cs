@@ -78,33 +78,6 @@ namespace Connections
             }
             return devices;
         }
-        
-         public static List<Device> ParseParametersFromJson(string jsonResponse)
-        {
-            List<Device> devices = new List<Device>();
-            var jsonData = JsonUtility.FromJson<JsonResponse>(jsonResponse);
-            string xmlString = jsonData.data;
-            
-            string filePath = Application.dataPath + "/parameters.xml";
-            
-            WriteToFile(filePath, xmlString); // crutch
-            
-            XmlDocument xmlDoc = new XmlDocument();
-            try
-            {
-                xmlDoc.Load(filePath);
-            }
-            catch (XmlException ex)
-            {
-                Debug.Log(ex.Message);
-            }
-            
-            Debug.Log(xmlDoc.OuterXml);
-            
-            //XmlNodeList deviceNodes = xmlDoc.GetElementsByTagName("device");
-            
-            return devices;
-        }
 
         private static void WriteToFile(string filePath, string content)
         {

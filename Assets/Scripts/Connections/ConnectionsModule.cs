@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using UnityEngine.Serialization;
 
 namespace Connections
 {
@@ -56,6 +58,12 @@ namespace Connections
     }
     
     [System.Serializable]
+    public class CalculationStatus
+    {
+        public string status;
+    }
+    
+    [System.Serializable]
     public class WrappedData
     {
         public string data;
@@ -64,26 +72,30 @@ namespace Connections
     public class ConnectionsModule : MonoBehaviour
     {
         public static string logFilePath = null;
+        public static string shortLogFilePath = null;
         
         public const String HostUrl = "http://orbita.kruzhok.org/";
         private readonly byte[] jsonData = Encoding.UTF8.GetBytes("{\"model\":\"planets\"}");
 
         public List<Device> devices = null;
         public ParametersResponse settings = null;
+        public CalculationStatus calculationStatus = null;
         public string sample = null;
         
         public bool devicesGot = false;
         
         public string result = null;
         public bool resultGot = false;
+        public bool statusGot = false;
         public bool settingsGot = false;
         public bool sampleGot = false;
         
-        public bool logDownloaded = false;
+        //public bool logDownloaded = false;
 
         public void Awake()
         {
             logFilePath = Path.Combine(Application.persistentDataPath, "log.log");
+            shortLogFilePath = Path.Combine(Application.persistentDataPath, "log.xml");
         }
 
         public bool IsConnectionAvailable()
@@ -97,8 +109,10 @@ namespace Connections
 
             return true;
         }
-        public IEnumerator DownloadAndSaveLog(string url)
+        
+        public IEnumerator DownloadAndSaveLog(string url, string path)
         {
+          //  logDownloaded = false;
             // Получаем путь к кэшу
             using (UnityWebRequest request = UnityWebRequest.Get(url))
             {
@@ -108,8 +122,8 @@ namespace Connections
                 {
                     try
                     {
-                        File.WriteAllBytes(logFilePath, request.downloadHandler.data);
-                        Debug.Log($"Файл успешно сохранён по пути: {logFilePath}");
+                        File.WriteAllBytes(path, request.downloadHandler.data);
+                        Debug.Log($"Файл успешно сохранён по пути: {path}");
                     }
                     catch (IOException e)
                     {
@@ -122,13 +136,15 @@ namespace Connections
                 }
             }
 
-            logDownloaded = true;
+           // logDownloaded = true;
         }
         
-        public void StartDownloadLog(string url)
+        
+        public void DownloadLogs(NecessaryLogs logsUrls)
         {
-            logDownloaded = false;
-            StartCoroutine(DownloadAndSaveLog(url));
+            //logDownloaded = false;
+            StartCoroutine(DownloadAndSaveLog(logsUrls.shortLogUrl, shortLogFilePath));
+            StartCoroutine(DownloadAndSaveLog(logsUrls.logUrl,logFilePath));
         }
         
 
@@ -164,6 +180,7 @@ namespace Connections
             request.downloadHandler = new DownloadHandlerBuffer();
             
             yield return request.SendWebRequest();
+            settings = null;
             
             if (request.result == UnityWebRequest.Result.Success)
             {
@@ -171,7 +188,14 @@ namespace Connections
                 try
                 {
                     settings = JsonConvert.DeserializeObject<ParametersResponse>(responseText);
-                    settingsGot = true;
+                    if (settings.program != null)
+                    { 
+                        settings.program = Regex.Replace(settings.program, @"^[\s\-]+", ""); 
+                    }
+                    else
+                    {
+                        settings.program = "";
+                    }
                 }
                 catch (System.Exception e)
                 {
@@ -182,12 +206,14 @@ namespace Connections
             {
                 Debug.LogError("Error: " + request.error);
             }
+            settingsGot = true;
             
         }
 
         // GET /sample
         public IEnumerator GetSample(string model, string mission)
         {
+            sampleGot = false;
             string url = HostUrl + "sample";
             
             UnityWebRequest request = UnityWebRequest.Get(url);
@@ -210,13 +236,13 @@ namespace Connections
                 
                 var jsonResponse = JsonUtility.FromJson<WrappedData>(responseText);
                 this.sample = jsonResponse.data;
-                sampleGot = true;
-                // TODO: прописать геты всего
             }
             else
             {
+                sample = null;
                 Debug.LogError("Error: " + request.error);
             }
+            sampleGot = true;
         }
        
         
@@ -224,6 +250,7 @@ namespace Connections
         // GET /devices
         public IEnumerator GetDevices()
         {
+            devicesGot = false;
             string url = HostUrl + "devices";
             
             UnityWebRequest request = UnityWebRequest.Get(url);
@@ -238,20 +265,15 @@ namespace Connections
             {
                 string responseText = request.downloadHandler.text;
                 
-                List<Device> devices = XmlProcessor.ParseDevicesFromJson(responseText);
-                foreach (var device in devices)
-                {
-                  //  Debug.Log($"Device Name: {device.Name}, FullName: {device.FullName}");
-                }
-                this.devices = devices;
+                devices = XmlProcessor.ParseDevicesFromJson(responseText);
+                Debug.Log($"Successfully got devices");
+               
             }
             else
             {
+                devices = null;
                 Debug.LogError("Error: " + request.error);
             }
-            
-            
-
             devicesGot = true;
         }
         
@@ -297,6 +319,7 @@ namespace Connections
         // GET /status
         public IEnumerator GetCalculationStatus(string model, string id)
         {
+            statusGot = false;
             UnityWebRequest request = UnityWebRequest.Get($"{HostUrl}status");
             request.SetRequestHeader("Content-Type", "application/json");
             
@@ -312,18 +335,23 @@ namespace Connections
 
             if (request.result == UnityWebRequest.Result.Success)
             {
-                Debug.Log("Calculation Status: " + request.downloadHandler.text);
+                var responseText = request.downloadHandler.text;
+                calculationStatus = JsonUtility.FromJson<CalculationStatus>(responseText);
+                Debug.Log("Calculation Status: " + calculationStatus.status);
             }
             else
             {
+                calculationStatus = null;
                 Debug.LogError("Failed to get status: " + request.error);
             }
+            statusGot = true;
         }
 
         
         // GET /result
         public IEnumerator GetCalculationResult(string model, string id)
         {
+            resultGot = false;
             UnityWebRequest request = UnityWebRequest.Get($"{HostUrl}/result?model={model}&id={id}");
             request.SetRequestHeader("Content-Type", "application/json");
             
@@ -344,6 +372,7 @@ namespace Connections
             }
             else
             {
+                result = null;
                 Debug.LogError("Failed to get result: " + request.error);
             }
             this.resultGot = true;

@@ -135,6 +135,5 @@ namespace XML
             Debug.LogWarning("< watch here if something with xml >:");
             Debug.Log(_document.OuterXml);
         }
- 
     }
 }

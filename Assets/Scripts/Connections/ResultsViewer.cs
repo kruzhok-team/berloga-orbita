@@ -1,10 +1,9 @@
-using UnityEngine;
-
 using System.Collections.Generic;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
 
-namespace Connections.Results
+namespace Connections
 {
     [System.Serializable]
     public class ServerResponse
@@ -12,6 +11,13 @@ namespace Connections.Results
         public List<string> images;
         public string log;
         public string xml;
+    }
+
+    [System.Serializable]
+    public class NecessaryLogs
+    {
+        public string shortLogUrl;
+        public string logUrl;
     }
 
 
@@ -25,19 +31,20 @@ namespace Connections.Results
         /// </summary>
         /// <param name="text"></param>
         /// <returns>log lile full url</returns>
-        public string FetchAndDisplayFiles(string text)
+        public NecessaryLogs FetchAndDisplayFiles(string text)
         {
             RemoveAllChildren();
             ServerResponse response = JsonUtility.FromJson<ServerResponse>(text);
             if (text == null || response == null)
             {
-                return "";
+                return null;
             }
-            
+            var result = new NecessaryLogs();
             {
                 string xmlPath = response.xml;
                 string trimmedPath = xmlPath.Substring(xmlPath.IndexOf('-') + 1);
                 CreateLink("Xml: " + trimmedPath, xmlPath);
+                result.shortLogUrl = ConnectionsModule.HostUrl + xmlPath;
             }
             
             foreach (string imagePath in response.images)
@@ -50,13 +57,13 @@ namespace Connections.Results
                 string logPath = response.log;
                 string trimmedPath = logPath.Substring(logPath.IndexOf('-') + 1);
                 CreateLink("Log: " + trimmedPath, logPath);
-                return ConnectionsModule.HostUrl + logPath;
-
+                result.logUrl = ConnectionsModule.HostUrl + logPath;
             }
+            return result;
             
         }
         
-        private void RemoveAllChildren()
+        public void RemoveAllChildren()
         {
             for (int i = gameObject.transform.childCount - 1; i >= 0; i--)
             {

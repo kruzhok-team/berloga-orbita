@@ -84,9 +84,11 @@ public sealed class GameManager : MonoBehaviour
     {
         panel.SetActive(true);
         var parser = FindFirstObjectByType<LogParser>();
-        var vs = FindFirstObjectByType<TelemetryVisualizer>();
+        var visualizer = FindFirstObjectByType<TelemetryVisualizer>();
         parser.ParseLogFile(ConnectionsModule.logFilePath);
-        vs.Visualize(parser.telemetryDataList);
+        parser.ParseShortLogFile(ConnectionsModule.shortLogFilePath);
+        
+        visualizer.Visualize(parser.telemetryDataList);
     }
     
     public void ExecuteModel()
@@ -99,6 +101,7 @@ public sealed class GameManager : MonoBehaviour
         }
         missionHandler.StartMissionCalculation(xModule.ToString());
         xModule.LogDocument();
+        ShowResults();
     }
 
     public void ShowResults()
@@ -141,8 +144,10 @@ public sealed class GameManager : MonoBehaviour
         ballisticHandler ??= FindFirstObjectByType<XHandlerInsertValue>();
         ballisticHandler.CallBack();
         xModuleBallistic.LogDocument();
-        Debug.LogWarning("Correctly generated XML output, but logic not implemented as no server exist");
-        // TODO: work with server and show results
+        
+        tabSystem.ActivateTab(TabType.RunAndExecute);
+        missionHandler.StartBallisticCalculation(xModuleBallistic.ToString());
+        StartCoroutine(missionHandler.GetCalculatorResults());
     }
-
+    
 }
