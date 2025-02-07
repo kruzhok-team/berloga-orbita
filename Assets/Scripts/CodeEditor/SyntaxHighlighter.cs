@@ -120,5 +120,9 @@ public class SyntaxHighlighter : MonoBehaviour
         return formattedText;
     }
 
+    public string GetWroteCodeText()
+    {
+        return inputText.text;
+    }
 
 }

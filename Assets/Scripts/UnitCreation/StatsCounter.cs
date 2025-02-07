@@ -14,9 +14,6 @@ namespace UnitCreation
     {
         public UnityEvent<List<Device>> onValueChanged;
         
-        public double totalMass = 0;
-        public double totalVolume = 0;
-
         public TextMeshProUGUI maxMassField;
         public TextMeshProUGUI maxVolumeField;
         public TextMeshProUGUI totalMassField;
@@ -27,18 +24,22 @@ namespace UnitCreation
         public void AddNewDevice(Device device)
         {
             deviceStats.Add(device);
-            onValueChanged.Invoke(deviceStats); // inside should be called UpdateValues
+            onValueChanged.Invoke(deviceStats);
         }
 
         public void RemoveDevice(Device device)
         {
             deviceStats.Remove(device);
+            onValueChanged.Invoke(deviceStats);
         }
-    
-        public void UpdateValues(double maxM, double maxV)
+
+        public void UpdateMaximums(double maxM, double maxV)
         {
-            maxMassField.text = maxM.ToString();
-            maxVolumeField.text = maxV.ToString();
+            maxMassField.text =  Math.Round(maxM, 2).ToString(CultureInfo.InvariantCulture);
+            maxVolumeField.text = Math.Round(maxV, 2).ToString(CultureInfo.InvariantCulture);
+        }
+        public void UpdateValues(double totalMass, double totalVolume)
+        {
             totalMassField.text = Math.Round(totalMass, 2).ToString(CultureInfo.InvariantCulture);
             totalVolumeField.text =  Math.Round(totalVolume, 2).ToString(CultureInfo.InvariantCulture);
         }

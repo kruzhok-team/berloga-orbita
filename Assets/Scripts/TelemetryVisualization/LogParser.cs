@@ -31,19 +31,24 @@ namespace TelemetryVisualization
     public class LogParser : MonoBehaviour
     {
         [HideInInspector] public List<TelemetryData> telemetryDataList = new List<TelemetryData>();
+        [HideInInspector] public FinalResults results = new FinalResults();
 
-        public FinalResults ParseShortLogFile(string path)
+        public void ParseShortLogFile(string path)
         {
-            FinalResults results = new FinalResults();
             XDocument doc = XDocument.Parse(File.ReadAllText(path));
             string result = doc.Root?.Descendants("result").FirstOrDefault()?.Value ?? "N/A";
             string reason = doc.Descendants("reason").FirstOrDefault()?.Value ?? "N/A";
-            string scientificInfo = doc.Descendants("scientificinformation").FirstOrDefault()?.Value ?? "No scientific data";
+            string scientificInfo = doc.Descendants("scientificinformation").FirstOrDefault()?.Value ?? "0";
 
             Debug.Log($"Result: {result}");
             Debug.Log($"Reason: {reason}");
             Debug.Log($"Scientific Information: {scientificInfo}");
-            return results;
+
+            if (result == "landing" || (result == "terminated" && reason == "limit"))
+            {
+                results.IsSuccess = true;
+                results.FinalScore = scientificInfo;
+            }
         }
         
         public void ParseLogFile(string filePath)

@@ -12,6 +12,7 @@ using XML;
 [RequireComponent(typeof(MissionHandler))]
 public sealed class GameManager : MonoBehaviour
 {
+    public GameObject startPanel = null;
     public static bool devicesGot = false;
     public static string devicePrefixPath = null;
     
@@ -22,6 +23,7 @@ public sealed class GameManager : MonoBehaviour
     private XGeneration unitCreationHandler = null;
     private IXHandler ballisticHandler  = null;
     private TabSystem tabSystem = null;
+    private Validator validator;
 
     public static GameManager Instance { get; private set; }
     
@@ -33,7 +35,9 @@ public sealed class GameManager : MonoBehaviour
     }
     private void Start()
     {
+        startPanel?.SetActive(true);
         missionHandler = GetComponent<MissionHandler>();
+        validator = GetComponent<Validator>();
         tabSystem = FindFirstObjectByType<TabSystem>();
         StartCoroutine(FindFirstObjectByType<ContentFiller>().FetchContent());
         RegisterHandlers();
@@ -63,6 +67,7 @@ public sealed class GameManager : MonoBehaviour
         {
             tabSystem.DeactivateTab(TabType.CodeEditor);
         }
+        startPanel?.SetActive(false);
     }
 
     public List<Device> GetDevices()
@@ -88,8 +93,9 @@ public sealed class GameManager : MonoBehaviour
         parser.ParseLogFile(ConnectionsModule.logFilePath);
         parser.ParseShortLogFile(ConnectionsModule.shortLogFilePath);
         
-        visualizer.Visualize(parser.telemetryDataList);
+        visualizer.Visualize(parser.telemetryDataList, parser.results);
     }
+    
     
     public void ExecuteModel()
     {
@@ -99,14 +105,24 @@ public sealed class GameManager : MonoBehaviour
         {
             handler.CallBack();
         }
-        missionHandler.StartMissionCalculation(xModule.ToString());
+        ValidatorState state = validator.Validate();
+        if (state != ValidatorState.Correct)
+        {
+            switch (state)
+            {
+                case ValidatorState.ProblemWithCode:
+                    missionHandler.DisplayStatus("проблема с кодом");
+                    return;
+                case ValidatorState.ProblemWithConstruction:
+                    missionHandler.DisplayStatus("проблема с аппаратом");
+                    return;
+            }
+            Debug.LogWarning("Were unhandled case of validator, counting as it's not valid" + state);
+            return;
+        }
+        missionHandler.StartCalculation(xModule.ToString(), "planets");
         xModule.LogDocument();
-        ShowResults();
-    }
-
-    public void ShowResults()
-    {
-        StartCoroutine(missionHandler.GetMissionResults());
+        validator.executions.Add(StartCoroutine(missionHandler.GetCalculationResults("planets")));
     }
     
 
@@ -146,8 +162,8 @@ public sealed class GameManager : MonoBehaviour
         xModuleBallistic.LogDocument();
         
         tabSystem.ActivateTab(TabType.RunAndExecute);
-        missionHandler.StartBallisticCalculation(xModuleBallistic.ToString());
-        StartCoroutine(missionHandler.GetCalculatorResults());
+        missionHandler.StartCalculation(xModuleBallistic.ToString(), "planets_gravity");
+        StartCoroutine(missionHandler.GetCalculationResults("planets_gravity"));
     }
     
 }

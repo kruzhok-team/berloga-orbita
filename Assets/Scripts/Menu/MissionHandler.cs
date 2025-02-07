@@ -12,19 +12,16 @@ namespace Menu
     [System.Serializable]
     public class Mission
     { 
-        //public string missionName;
         public bool allowedBallisticCalculator = true;
         public bool allowedUnitCreation = true;
         public bool allowedCode = true;
     }
     
+    [RequireComponent(typeof(Validator))]
     public class MissionHandler : MonoBehaviour
     {
         public BaseParameterSetup baseParameterSetup;
         [SerializeField] public string lastMissionId = null;
-        public TextMeshProUGUI maxMassField;
-        public TextMeshProUGUI maxVolumeField;
-        public TextMeshProUGUI startHeightField;
         public TextMeshProUGUI resultStatusField;
         
         public string missionName;
@@ -32,6 +29,7 @@ namespace Menu
         public Mission Mission { get; private set; } = new Mission();
         public ConnectionsModule Server { get; private set; }
         public List<Device> Devices { get; private set; } = new List<Device>();
+        private Validator validator;
         
         
         public int isReady = 1; // 0 = ready
@@ -40,6 +38,7 @@ namespace Menu
         {
             isReady = 1;
             Server = gameObject.AddComponent<ConnectionsModule>();
+            validator = GetComponent<Validator>();
             StartCoroutine(Server.GetDevices());
             StartCoroutine(Server.GetSample("planets", missionName));
             StartCoroutine(Server.GetParameters("planets", missionName));
@@ -56,7 +55,6 @@ namespace Menu
 
             if (Server.devices == null)
             {
-                // Very bad
                 Debug.LogError("No devices got loaded!");
             }
             foreach (var device in Server.devices.Where(device => Server.settings.devices.Contains(device.Name)))
@@ -70,82 +68,53 @@ namespace Menu
             isReady--;
         }
 
-        public void StartMissionCalculation(string xml)
+        public void StartCalculation(string xml, string model)
         {
+            validator.StopAllExecutions();
             lastMissionId = null;
-            StartCoroutine(Server.PostCalculation("planets", xml, (s => lastMissionId = s)));
+            validator.executions.Add(StartCoroutine(
+                Server.PostCalculation(model, xml, (s => lastMissionId = s))));
             FindFirstObjectByType<ResultsViewer>()?.RemoveAllChildren();
+        }
+        
+        
+        public IEnumerator GetCalculationResults(string model)
+        {
+            resultStatusField.SetText("запускаем");
+            while (lastMissionId == null)
+            {
+                yield return new WaitForSeconds(0.2f);
+            }
+            // collecting and awaiting completed status
+            validator.executions.Add(StartCoroutine(Server.GetCalculationStatus(model, lastMissionId)));
+            while (Server.calculationStatus is not { status: "completed" })
+            {
+                if (Server.statusGot)
+                {
+                    validator.executions.Add(StartCoroutine(Server.GetCalculationStatus(model, lastMissionId)));
+                }
+                yield return new WaitForSeconds(0.5f);
+                
+            }
+            resultStatusField.SetText("вычисляем");
+            validator.executions.Add(StartCoroutine(Server.GetCalculationResult(model, lastMissionId)));
+            while (!Server.resultGot)
+            {
+                yield return new WaitForSeconds(0.1f);
+            }
+            resultStatusField.SetText("получен");
+            var rv = FindFirstObjectByType<ResultsViewer>();
+            var logUrl = rv.FetchAndDisplayFiles(Server.result);
+            if (model != "planets_gravity")
+            {
+                Server.DownloadLogs(logUrl);
+            }
+            
         }
 
-        
-        public IEnumerator GetMissionResults()
+        public void DisplayStatus(string status)
         {
-            resultStatusField.SetText("запускаем");
-            while (lastMissionId == null)
-            {
-                yield return new WaitForSeconds(0.2f);
-            }
-            // collecting and awaiting completed status
-            StartCoroutine(Server.GetCalculationStatus("planets", lastMissionId));
-            while (Server.calculationStatus is not { status: "completed" })
-            {
-                if (Server.statusGot)
-                {
-                    StartCoroutine(Server.GetCalculationStatus("planets", lastMissionId));
-                }
-                yield return new WaitForSeconds(0.5f);
-                
-            }
-            resultStatusField.SetText("вычисляем");
-            StartCoroutine(Server.GetCalculationResult("planets", lastMissionId));
-            while (!Server.resultGot)
-            {
-                yield return new WaitForSeconds(0.1f);
-            }
-            resultStatusField.SetText("получен");
-            var rv = FindFirstObjectByType<ResultsViewer>();
-            var logUrl = rv.FetchAndDisplayFiles(Server.result);
-            
-            Server.DownloadLogs(logUrl);
-        }
-        
-        public void StartBallisticCalculation(string xml)
-        {
-            lastMissionId = null;
-            StartCoroutine(Server.PostCalculation("planets_gravity", xml, (s => lastMissionId = s)));
-            FindFirstObjectByType<ResultsViewer>()?.RemoveAllChildren();
-        }
-        
-        public IEnumerator GetCalculatorResults()
-        {
-            // TODO: in one function!
-            
-            resultStatusField.SetText("запускаем");
-            while (lastMissionId == null)
-            {
-                yield return new WaitForSeconds(0.2f);
-            }
-            // collecting and awaiting completed status
-            StartCoroutine(Server.GetCalculationStatus("planets_gravity", lastMissionId));
-            while (Server.calculationStatus is not { status: "completed" })
-            {
-                if (Server.statusGot)
-                {
-                    StartCoroutine(Server.GetCalculationStatus("planets_gravity", lastMissionId));
-                }
-                yield return new WaitForSeconds(0.5f);
-                
-            }
-            resultStatusField.SetText("вычисляем");
-            StartCoroutine(Server.GetCalculationResult("planets_gravity", lastMissionId));
-            while (!Server.resultGot)
-            {
-                yield return new WaitForSeconds(0.1f);
-            }
-            resultStatusField.SetText("получен");
-            var rv = FindFirstObjectByType<ResultsViewer>();
-            var logUrl = rv.FetchAndDisplayFiles(Server.result);
-            
+            resultStatusField.SetText(status);
         }
         
 
