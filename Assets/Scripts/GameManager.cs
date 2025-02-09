@@ -29,6 +29,7 @@ public sealed class GameManager : MonoBehaviour
     
     private void Awake()
     {
+        devicesGot = false;
         Instance = this;
         Application.targetFrameRate = 60;
         devicePrefixPath = "Devices/";

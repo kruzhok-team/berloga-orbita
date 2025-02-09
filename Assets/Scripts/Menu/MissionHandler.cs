@@ -44,8 +44,8 @@ namespace Menu
             StartCoroutine(Server.GetParameters("planets", missionName));
             StartCoroutine(WaitForResults());
         }
-        
-        
+
+
         private IEnumerator WaitForResults()
         {
             while (!Server.devicesGot || !Server.sampleGot || !Server.settingsGot)
@@ -57,9 +57,13 @@ namespace Menu
             {
                 Debug.LogError("No devices got loaded!");
             }
-            foreach (var device in Server.devices.Where(device => Server.settings.devices.Contains(device.Name)))
+
+            if (Server.devices != null)
             {
-                Devices.Add(device);
+                foreach (var device in Server.devices.Where(device => Server.settings.devices.Contains(device.Name)))
+                {
+                    Devices.Add(device);
+                }
             }
 
             Mission.allowedUnitCreation = Server.settings.need_construction;

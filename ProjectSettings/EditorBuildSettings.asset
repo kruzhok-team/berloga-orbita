@@ -10,7 +10,16 @@ EditorBuildSettings:
     guid: 08c1a4793ae06e92b8156765018eeb16
   - enabled: 1
     path: Assets/Scenes/Mission1.unity
-    guid: 949013fefb0fc7c7c8a872b686109186
+    guid: 919b2b3fd9012954db6f18e74547ddb3
+  - enabled: 1
+    path: Assets/Scenes/Mission2.unity
+    guid: 451dcd074ce47614a8d7308205eac8a0
+  - enabled: 1
+    path: Assets/Scenes/Mission3.unity
+    guid: 6c43d0c92c8862e4293d941512f5a7f1
+  - enabled: 1
+    path: Assets/Scenes/Mission4.unity
+    guid: 3d5c66bc4996e4941a2bc957be11f1e1
   m_configObjects:
     com.unity.adaptiveperformance.google.android.provider_settings: {fileID: 11400000, guid: a77449874aee50cd4b5729ef925cec65, type: 2}
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 3e4fefceeb86c1e449910b250c9d2fe9, type: 2}

@@ -1,16 +1,31 @@
 fileFormatVersion: 2
-guid: c47af88fec52e364c9834069b232d1f1
+guid: bbd5693cffede92439f0b1b87072d76a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7042847911465117151
-    second: menu_0
+      213: 2800543173965718157
+    second: rot_0
   - first:
-      213: 6984307464289580096
-    second: menu_1
+      213: -3710049352200403370
+    second: rot_1
   - first:
-      213: -1438552683215292887
-    second: menu_2
+      213: 5056135005972071806
+    second: rot_2
+  - first:
+      213: -4132037359575057224
+    second: rot_3
+  - first:
+      213: -5599952750193431817
+    second: rot_4
+  - first:
+      213: -7922759513740334592
+    second: rot_5
+  - first:
+      213: 7970782655065943805
+    second: rot_6
+  - first:
+      213: -945183847143082354
+    second: rot_7
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +67,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -119,13 +134,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: menu_0
+      name: rot_0
       rect:
         serializedVersion: 2
-        x: 15
-        y: 175
-        width: 226
-        height: 66
+        x: 59
+        y: 237
+        width: 103
+        height: 184
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -134,20 +149,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: fd5eaf16cd83db160800000000000000
-      internalID: 7042847911465117151
+      spriteID: d822f56cd278dd620800000000000000
+      internalID: 2800543173965718157
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: menu_1
+      name: rot_1
       rect:
         serializedVersion: 2
-        x: 15
-        y: 95
-        width: 226
-        height: 66
+        x: 286
+        y: 237
+        width: 100
+        height: 194
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -156,20 +171,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 044f61362ae3de060800000000000000
-      internalID: 6984307464289580096
+      spriteID: 6564de655c1438cc0800000000000000
+      internalID: -3710049352200403370
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: menu_2
+      name: rot_2
       rect:
         serializedVersion: 2
-        x: 15
-        y: 15
-        width: 226
-        height: 66
+        x: 510
+        y: 237
+        width: 100
+        height: 194
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -178,8 +193,118 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 9267446d4fb390ce0800000000000000
-      internalID: -1438552683215292887
+      spriteID: e750267dffffa2640800000000000000
+      internalID: 5056135005972071806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rot_3
+      rect:
+        serializedVersion: 2
+        x: 734
+        y: 237
+        width: 100
+        height: 191
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bcb2e7f9ed08a6c0800000000000000
+      internalID: -4132037359575057224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rot_4
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 16
+        width: 100
+        height: 191
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7faafbdb4a8f842b0800000000000000
+      internalID: -5599952750193431817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rot_5
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 13
+        width: 104
+        height: 194
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00a29a6e234bc0290800000000000000
+      internalID: -7922759513740334592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rot_6
+      rect:
+        serializedVersion: 2
+        x: 517
+        y: 13
+        width: 97
+        height: 194
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfeec010898ed9e60800000000000000
+      internalID: 7970782655065943805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: rot_7
+      rect:
+        serializedVersion: 2
+        x: 731
+        y: 13
+        width: 103
+        height: 194
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e86799f7c4802e2f0800000000000000
+      internalID: -945183847143082354
       vertices: []
       indices: 
       edges: []
@@ -188,7 +313,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -198,9 +323,14 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      menu_0: 7042847911465117151
-      menu_1: 6984307464289580096
-      menu_2: -1438552683215292887
+      rot_0: 2800543173965718157
+      rot_1: -3710049352200403370
+      rot_2: 5056135005972071806
+      rot_3: -4132037359575057224
+      rot_4: -5599952750193431817
+      rot_5: -7922759513740334592
+      rot_6: 7970782655065943805
+      rot_7: -945183847143082354
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

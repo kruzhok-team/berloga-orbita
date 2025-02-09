@@ -17,7 +17,7 @@ namespace UnitCreation
         {
             foreach (TMP_InputField field in fields)
             {
-                field.onValueChanged.AddListener((s => Trigger(s)));
+            //    field.onValueChanged.AddListener(Trigger);
             }
             button.onClick.AddListener(() => Trigger(null));
         }

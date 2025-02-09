@@ -1,15 +1,23 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
+namespace Menu
 {
-    public void LoadScene(string sceneName)
+    public class MainMenu : MonoBehaviour
     {
-        SceneManager.LoadScene(sceneName);
-    }
+        public void Awake()
+        {
+            Application.targetFrameRate = 60;
+        }
+    
+        public void LoadScene(string sceneName)
+        {
+            SceneManager.LoadScene(sceneName);
+        }
 
-    public void ExitGame()
-    {
-        Application.Quit();
+        public void ExitGame()
+        {
+            Application.Quit();
+        }
     }
 }

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 [RequireComponent(typeof(DialogSystem))]
 public class Dialog : MonoBehaviour, IPointerClickHandler
 {
+    private static readonly int LineCount = Animator.StringToHash("lineCount");
+    public Animator guyAnimator;
     public List<string> lines;
     public DialogSystem dialogSystem;
     private int currentLine = 0;
@@ -23,6 +25,7 @@ public class Dialog : MonoBehaviour, IPointerClickHandler
     
     private void NextLine()
     {
+        guyAnimator.SetInteger(LineCount, currentLine % 3);
         if (currentLine >= lines.Count)
         {
             EndDialog();

@@ -30,9 +30,10 @@ namespace Menu
         
         public float maxMass = 20000f;
         public float maxExternalRadius = 2.0f;
+        public float maxInternalRadius = 2.0f;
         //public float startHeightValue = 0.0f;
         
-        private List<Device> _devices;
+        protected List<Device> _devices;
 
         public void Start()
         {

@@ -1,16 +1,25 @@
 fileFormatVersion: 2
-guid: c47af88fec52e364c9834069b232d1f1
+guid: ceb9ac766f2730246bed976cc2bca81d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7042847911465117151
-    second: menu_0
+      213: 5849612727162771064
+    second: Point_0
   - first:
-      213: 6984307464289580096
-    second: menu_1
+      213: -1073631194970396152
+    second: Point_1
   - first:
-      213: -1438552683215292887
-    second: menu_2
+      213: -3071758926632865882
+    second: Point_2
+  - first:
+      213: -2236023745593081960
+    second: Point_3
+  - first:
+      213: -1352945145426351621
+    second: Point_4
+  - first:
+      213: -3415257630949372685
+    second: Point_5
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +61,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -119,67 +128,133 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: menu_0
+      name: Guy_Point_0
       rect:
         serializedVersion: 2
-        x: 15
-        y: 175
-        width: 226
-        height: 66
+        x: 17
+        y: 69
+        width: 29
+        height: 52
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: fd5eaf16cd83db160800000000000000
-      internalID: 7042847911465117151
+      spriteID: ef4f4fd4edb479f4ca0b982cb8e8a438
+      internalID: -400680593
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: menu_1
+      name: Guy_Point_1
       rect:
         serializedVersion: 2
-        x: 15
-        y: 95
-        width: 226
-        height: 66
+        x: 81
+        y: 69
+        width: 29
+        height: 52
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 044f61362ae3de060800000000000000
-      internalID: 6984307464289580096
+      spriteID: 91e29a881ed5590428f386b8605ceabb
+      internalID: 782459224
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: menu_2
+      name: Guy_Point_2
       rect:
         serializedVersion: 2
-        x: 15
-        y: 15
-        width: 226
-        height: 66
+        x: 145
+        y: 69
+        width: 37
+        height: 52
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 9267446d4fb390ce0800000000000000
-      internalID: -1438552683215292887
+      spriteID: ff88cf6926f73634897585bd1d914f58
+      internalID: 176097104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Guy_Point_3
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 5
+        width: 37
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e6b83e353c6e0474aab240aa3170c824
+      internalID: -241463124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Guy_Point_4
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 5
+        width: 37
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: beaf27022ec6fd0419db4d5a24dcb8d6
+      internalID: 15980186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Guy_Point_5
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 5
+        width: 37
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9da5eb83df815e34792dfda75dc9251e
+      internalID: -1966792938
       vertices: []
       indices: 
       edges: []
@@ -188,7 +263,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 755c40c8d8b5d324f8a31c5b4b5246d7
     internalID: 0
     vertices: []
     indices: 
@@ -198,9 +273,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      menu_0: 7042847911465117151
-      menu_1: 6984307464289580096
-      menu_2: -1438552683215292887
+      Guy_Point_0: -400680593
+      Guy_Point_1: 782459224
+      Guy_Point_2: 176097104
+      Guy_Point_3: -241463124
+      Guy_Point_4: 15980186
+      Guy_Point_5: -1966792938
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
