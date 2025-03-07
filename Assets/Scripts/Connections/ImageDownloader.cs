@@ -10,17 +10,15 @@ namespace Connections
     {
         public static async Task DownloadAndSaveImageAsync(string url, string savePath)
         {
-            using (HttpClient client = new HttpClient())
+            using HttpClient client = new HttpClient();
+            try
             {
-                try
-                {
-                    var imageData = await client.GetByteArrayAsync(url);
-                    await File.WriteAllBytesAsync(savePath, imageData);
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError("Error while saving or downloading: " + e.Message);
-                }
+                var imageData = await client.GetByteArrayAsync(url);
+                await File.WriteAllBytesAsync(savePath, imageData);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Error while saving or downloading: " + e.Message);
             }
         }
     }

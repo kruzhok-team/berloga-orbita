@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
 using System;
+using System.Collections;
 using UnityEngine.UI;
 
 namespace XML
@@ -24,15 +25,25 @@ namespace XML
         
         [SerializeField] public List<PlaceToInsert> attributes;
         
-        private void Start()
+        private IEnumerator Start()
         {
-            var manager = FindFirstObjectByType<GameManager>();
-            _module = manager.GetXModuleBallistics();
-            if (_module == null)
+            GameManager manager = null;
+            while (_module == null)
             {
-                Debug.LogError("XMLHandler: Can't find GameManager");
+                manager = Init();
+                yield return new WaitForSeconds(0.5f);
             }
             calculateBtn.onClick.AddListener(() => manager.BallisticCalculatorBtnPushDown());
+        }
+
+        private GameManager Init()
+        {
+            var manager = FindFirstObjectByType<GameManager>();
+            if (manager != null)
+            {
+                _module = manager.GetXModuleBallistics();
+            }
+            return manager;
         }
         
         public void CallBack()
@@ -42,13 +53,14 @@ namespace XML
             
             foreach (var attribute in attributes)
             {
-                string cleaned = Regex.Replace(attribute.valueRef.text, @"[^a-zA-Zа-яА-Я0-9]", "");
-
+                string cleaned = Regex.Replace(attribute.valueRef.text, @"[^a-zA-Zа-яА-Я0-9\-]", "");
+                
                 if (attribute.xpath == "//square") // TODO: should put this logic into text getter
                 {
                     // TODO: here can be no value so inner logic should check this and not allow do callback
                     cleaned = (Convert.ToDouble(cleaned) * Convert.ToDouble(cleaned) * Math.PI).ToString();
                 }
+                cleaned = cleaned.Replace(",", ".");
                 insertingValues.Add(new Pair() { key = attribute.xpath, value = cleaned});
             }
             _module.InsertInnerValues(insertingValues);

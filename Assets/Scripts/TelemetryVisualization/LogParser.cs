@@ -1,5 +1,8 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace TelemetryVisualization
@@ -19,10 +22,35 @@ namespace TelemetryVisualization
         }
     }
 
+    public class FinalResults
+    {
+        public bool IsSuccess = false;
+        public string FinalScore = null;
+    }
+
     public class LogParser : MonoBehaviour
     {
         [HideInInspector] public List<TelemetryData> telemetryDataList = new List<TelemetryData>();
+        [HideInInspector] public FinalResults results = new FinalResults();
 
+        public void ParseShortLogFile(string path)
+        {
+            XDocument doc = XDocument.Parse(File.ReadAllText(path));
+            string result = doc.Root?.Descendants("result").FirstOrDefault()?.Value ?? "N/A";
+            string reason = doc.Descendants("reason").FirstOrDefault()?.Value ?? "N/A";
+            string scientificInfo = doc.Descendants("scientificinformation").FirstOrDefault()?.Value ?? "0";
+
+            Debug.Log($"Result: {result}");
+            Debug.Log($"Reason: {reason}");
+            Debug.Log($"Scientific Information: {scientificInfo}");
+
+            if (result == "landing" || (result == "terminated" && reason == "limit"))
+            {
+                results.IsSuccess = true;
+                results.FinalScore = scientificInfo;
+            }
+        }
+        
         public void ParseLogFile(string filePath)
         {
             telemetryDataList.Clear();
@@ -84,7 +112,7 @@ namespace TelemetryVisualization
         {
             // Пример значения: H=049920.9
             string valueString = valuePart.Split("=")[1];
-            return float.Parse(valueString);
+            return float.Parse(valueString, CultureInfo.InvariantCulture);
         }
     }
 }

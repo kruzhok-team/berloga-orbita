@@ -1,72 +1,131 @@
-#define NO_SERVER
-
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using Connections;
+using System.Threading.Tasks;
 using TelemetryVisualization;
 using UnityEngine;
+using Connections;
+using Menu;
+using UnitCreation;
 using UnityEngine.Serialization;
 using XML;
 
+[RequireComponent(typeof(MissionHandler))]
 public sealed class GameManager : MonoBehaviour
 {
-    private static XModule xModule = new XModule();
-    private static XModule xModuleBallistic = new XModule();
-    private static ConnectionsModule _connectionsModule = new ConnectionsModule();
+    public GameObject startPanel = null;
+    public static bool devicesGot = false;
+    public static string devicePrefixPath = null;
     
+    private static XModule xModule;
+    private static XModule xModuleBallistic;
+    
+    private MissionHandler missionHandler;
     private XGeneration unitCreationHandler = null;
     private IXHandler ballisticHandler  = null;
+    private TabSystem tabSystem = null;
+    private Validator validator;
 
-    private string ballisticsPath = Application.dataPath + "/Resources";
-    private string ballisticsFileName = "ballistics.xml";
+    public static GameManager Instance { get; private set; }
     
-    [SerializeField] public string outputPath = Application.dataPath + "/Out";
-    [SerializeField] public string inputPath =  Application.dataPath + "/Input";
-    
-    [SerializeField] public string fileName =  "";
-#if NO_SERVER  // options used after manually add file in input folder
-    public bool addedTelemetryFile=false;
-#endif
     private void Awake()
     {
-        //xModule = new XModule();
+        devicesGot = false;
+        Instance = this;
+        Application.targetFrameRate = 60;
+        devicePrefixPath = "Devices/";
     }
-
     private void Start()
     {
+        startPanel?.SetActive(true);
+        missionHandler = GetComponent<MissionHandler>();
+        validator = GetComponent<Validator>();
+        tabSystem = FindFirstObjectByType<TabSystem>();
+        StartCoroutine(FindFirstObjectByType<ContentFiller>().FetchContent());
         RegisterHandlers();
-        xModuleBallistic.FileName = ballisticsFileName;
-        xModuleBallistic.FilePath = ballisticsPath;
-        xModule.FilePath = inputPath;
-        xModule.FileName = fileName;
+        StartCoroutine(PrepareMission());
+        StartCoroutine(GetAllowedDevices());
     }
+    
 
-    private void Update()
+    private IEnumerator PrepareMission()
     {
-#if NO_SERVER
-        if (addedTelemetryFile)
+        while (missionHandler.isReady != 0)
         {
-            addedTelemetryFile = false;
-            VisualizeTelemetry(Application.dataPath + "/Out" + "/log.log");
+            yield return new WaitForSeconds(0.1f);
         }
-#else
-        // TODO: server logic
-#endif
-    }
-    public void TestImage(string url = @"https://avatars.mds.yandex.net/i?id=9a7f15bfd1db79112f1fd527886da06e_l-4255244-images-thumbs&n=13")
-    {
-        Debug.Log(Application.dataPath);
-        _connectionsModule.DownloadImage(url, Application.dataPath + "/Out" + "/test.png");
+        xModule = new XModule(missionHandler.GetMissionXmlPath());
+        xModuleBallistic = new XModule(missionHandler.GetBallisticCalculatorXmlPath());
+        
+        if (!missionHandler.Mission.allowedBallisticCalculator)
+        {
+            tabSystem.DeactivateTab(TabType.Ballistic);
+        }
+        if (!missionHandler.Mission.allowedUnitCreation)
+        {
+            tabSystem.DeactivateTab(TabType.UnitCreation);
+        }
+        if (!missionHandler.Mission.allowedCode)
+        {
+            tabSystem.DeactivateTab(TabType.CodeEditor);
+        }
+        startPanel?.SetActive(false);
     }
 
-    private void VisualizeTelemetry(string path)
+    public List<Device> GetDevices()
     {
-        LogParser parser = FindFirstObjectByType<LogParser>();
-        TelemetryVisualizer vs = FindFirstObjectByType<TelemetryVisualizer>();
-        parser.ParseLogFile(path);
-        vs.Visualize(parser.telemetryDataList);
+        return missionHandler.Devices;
     }
+    
+    private IEnumerator GetAllowedDevices()
+    {
+        while (missionHandler.isReady != 0)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        devicesGot = true;
+    }
+    
+
+    public void VisualizeTelemetry(GameObject panel)
+    {
+        panel.SetActive(true);
+        var parser = FindFirstObjectByType<LogParser>();
+        var visualizer = FindFirstObjectByType<TelemetryVisualizer>();
+        parser.ParseLogFile(ConnectionsModule.logFilePath);
+        parser.ParseShortLogFile(ConnectionsModule.shortLogFilePath);
+        
+        visualizer.Visualize(parser.telemetryDataList, parser.results);
+    }
+    
+    
+    public void ExecuteModel()
+    {
+        xModule.Reload();
+        List<IXHandler> handlers = unitCreationHandler.CollectParts();
+        foreach (IXHandler handler in handlers)
+        {
+            handler.CallBack();
+        }
+        ValidatorState state = validator.Validate();
+        if (state != ValidatorState.Correct)
+        {
+            switch (state)
+            {
+                case ValidatorState.ProblemWithCode:
+                    missionHandler.DisplayStatus("проблема с кодом");
+                    return;
+                case ValidatorState.ProblemWithConstruction:
+                    missionHandler.DisplayStatus("проблема с аппаратом");
+                    return;
+            }
+            Debug.LogWarning("Were unhandled case of validator, counting as it's not valid" + state);
+            return;
+        }
+        missionHandler.StartCalculation(xModule.ToString(), "planets");
+        xModule.LogDocument();
+        validator.executions.Add(StartCoroutine(missionHandler.GetCalculationResults("planets")));
+    }
+    
 
     public void GenerateFinalXml()
     {
@@ -99,10 +158,13 @@ public sealed class GameManager : MonoBehaviour
     public void BallisticCalculatorBtnPushDown()
     {
         xModuleBallistic.Reload();
+        ballisticHandler ??= FindFirstObjectByType<XHandlerInsertValue>();
         ballisticHandler.CallBack();
         xModuleBallistic.LogDocument();
-        Debug.LogWarning("Correctly generated XML output, but logic not implemented as no server exist");
-        // TODO: work with server and show results
+        
+        tabSystem.ActivateTab(TabType.RunAndExecute);
+        missionHandler.StartCalculation(xModuleBallistic.ToString(), "planets_gravity");
+        StartCoroutine(missionHandler.GetCalculationResults("planets_gravity"));
     }
-
+    
 }

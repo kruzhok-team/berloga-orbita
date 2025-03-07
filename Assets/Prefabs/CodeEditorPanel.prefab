@@ -193,103 +193,102 @@ MonoBehaviour:
   colorMappings:
   - keyword: class
     color: {r: 0.305, g: 0.788, b: 0.69, a: 1}
-    style: 2
   - keyword: def
     color: {r: 0.305, g: 0.788, b: 0.69, a: 1}
-    style: 2
   - keyword: if
     color: {r: 0, g: 0.478, b: 0.8, a: 1}
-    style: 0
   - keyword: else
     color: {r: 0, g: 0.478, b: 0.8, a: 1}
-    style: 0
   - keyword: elif
     color: {r: 0, g: 0.478, b: 0.8, a: 1}
-    style: 0
   - keyword: for
     color: {r: 0, g: 0.478, b: 0.8, a: 1}
-    style: 0
   - keyword: while
     color: {r: 0, g: 0.478, b: 0.8, a: 1}
-    style: 0
   - keyword: return
     color: {r: 0.863, g: 0.424, b: 0.349, a: 1}
-    style: 2
   - keyword: import
     color: {r: 0.8, g: 0.471, b: 0.196, a: 1}
-    style: 0
   - keyword: from
     color: {r: 0.8, g: 0.471, b: 0.196, a: 1}
-    style: 0
   - keyword: as
     color: {r: 0.8, g: 0.471, b: 0.196, a: 1}
-    style: 0
   - keyword: try
     color: {r: 0, g: 0.478, b: 0.8, a: 1}
-    style: 0
   - keyword: except
     color: {r: 0, g: 0.478, b: 0.8, a: 1}
-    style: 0
   - keyword: finally
     color: {r: 0, g: 0.478, b: 0.8, a: 1}
-    style: 0
   - keyword: raise
     color: {r: 0.8, g: 0.471, b: 0.196, a: 1}
-    style: 0
   - keyword: with
     color: {r: 0.8, g: 0.471, b: 0.196, a: 1}
-    style: 0
   - keyword: lambda
     color: {r: 0.305, g: 0.788, b: 0.69, a: 1}
-    style: 0
   - keyword: True
     color: {r: 0.773, g: 0.525, b: 0.753, a: 1}
-    style: 2
   - keyword: False
     color: {r: 0.773, g: 0.525, b: 0.753, a: 1}
-    style: 2
   - keyword: None
     color: {r: 0.773, g: 0.525, b: 0.753, a: 1}
-    style: 2
   - keyword: and
     color: {r: 0.863, g: 0.424, b: 0.349, a: 1}
-    style: 0
   - keyword: or
     color: {r: 0.863, g: 0.424, b: 0.349, a: 1}
-    style: 0
   - keyword: not
     color: {r: 0.863, g: 0.424, b: 0.349, a: 1}
-    style: 0
   - keyword: is
     color: {r: 0.863, g: 0.424, b: 0.349, a: 1}
-    style: 0
   - keyword: in
     color: {r: 0.863, g: 0.424, b: 0.349, a: 1}
-    style: 0
   - keyword: global
     color: {r: 0.305, g: 0.788, b: 0.69, a: 1}
-    style: 0
   - keyword: nonlocal
     color: {r: 0.305, g: 0.788, b: 0.69, a: 1}
-    style: 0
   - keyword: assert
     color: {r: 0.8, g: 0.471, b: 0.196, a: 1}
-    style: 0
   - keyword: pass
     color: {r: 0.8, g: 0.471, b: 0.196, a: 1}
-    style: 0
   - keyword: break
     color: {r: 0.8, g: 0.471, b: 0.196, a: 1}
-    style: 0
   - keyword: continue
     color: {r: 0.8, g: 0.471, b: 0.196, a: 1}
-    style: 0
   - keyword: yield
     color: {r: 0.305, g: 0.788, b: 0.69, a: 1}
-    style: 2
   - keyword: del
     color: {r: 0.8, g: 0.471, b: 0.196, a: 1}
-    style: 0
+  missionHandler: {fileID: 0}
+--- !u!1 &2083428221995293792
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4490437938631204709}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4490437938631204709
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2083428221995293792}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 79.7829, y: -244.53366, z: -0.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6457764185804510865}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4196562641183205362
 GameObject:
   m_ObjectHideFlags: 0
@@ -326,7 +325,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.5}
+  m_AnchoredPosition: {x: 0, y: -0.5001221}
   m_SizeDelta: {x: -20, y: -13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1442216801903080463
@@ -375,9 +374,10 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2929521647995122277}
+  - {fileID: 4490437938631204709}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.1}
+  m_AnchorMin: {x: 0, y: 0.14500001}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
@@ -432,7 +432,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05cfc27cb4d44c7c81d4c3aa275d0a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  codeText: {fileID: 7811049075320449855}
+  codeText: {fileID: 8983417185395232259}
   xpath: //python_code
 --- !u!1 &7384301029692967776
 GameObject:
@@ -493,7 +493,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -508,8 +508,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 3289650
-  m_fontColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -606,7 +606,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.047222223, y: 0.03333333}
   m_AnchorMax: {x: 0.9416666, y: 0.96000004}
-  m_AnchoredPosition: {x: -0.000030517578, y: 1.4999084}
+  m_AnchoredPosition: {x: 0, y: 1.4998779}
   m_SizeDelta: {x: 0.000061035, y: 2.9998}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4223045016694380340

@@ -11,6 +11,7 @@
         <isolator>OFF</isolator>
     </parameters>
     <devices>
+        <!-- Я вставляю тут -->
     </devices>
     <program>
         <stage id="Landing">
@@ -20,5 +21,7 @@
             <command time="0" device="D1" action="PERIOD" argument="10"/>
         </stage>
     </program>
-    <python_code></python_code>
+    <python_code> 
+       <!-- Я вставляю тут -->
+    </python_code>
 </v:probe>

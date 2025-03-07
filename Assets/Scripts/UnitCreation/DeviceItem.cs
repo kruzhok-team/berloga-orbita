@@ -1,3 +1,4 @@
+using Connections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,9 +14,9 @@ namespace UnitCreation
         public void Setup(Device currentDevice)
         {
             device = currentDevice;
-            nameText.text = currentDevice.name;
+            nameText.text = currentDevice.FullName;
         
-            Sprite deviceSprite = Resources.Load<Sprite>(currentDevice.imagePath);
+            Sprite deviceSprite = Resources.Load<Sprite>(GameManager.devicePrefixPath + currentDevice.Name);
 
             if (deviceSprite != null)
             {
@@ -23,7 +24,7 @@ namespace UnitCreation
             }
             else
             {
-                Debug.LogError("Sprite not found at path: " + currentDevice.imagePath);
+                Debug.LogError("Sprite not found at path: " + GameManager.devicePrefixPath + currentDevice.Name + ".png");
             }
         }
     }
